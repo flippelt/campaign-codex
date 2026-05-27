@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="600" height="460" viewBox="0 0 600 460">
+  <rect width="600" height="460" fill="#140f0c"/>
+  <!-- mountain silhouette -->
+  <path d="M300 20 L560 430 H40 Z" fill="#241a14" stroke="#c8702a" stroke-width="2"/>
+  <!-- level dividers -->
+  <line x1="150" y1="170" x2="450" y2="170" stroke="#e3b341" stroke-width="1" stroke-dasharray="4 5"/>
+  <line x1="95"  y1="300" x2="505" y2="300" stroke="#e3b341" stroke-width="1" stroke-dasharray="4 5"/>
+  <!-- level I -->
+  <text x="250" y="150" fill="#f1e7d6" font-family="Georgia, serif" font-size="14">⬆️ Nível I — Círculo de Cinza</text>
+  <text x="250" y="166" fill="#b8a98f" font-family="Georgia, serif" font-size="10">portão sul · taverna · mercado · arsenal</text>
+  <!-- level II -->
+  <text x="218" y="248" fill="#f1e7d6" font-family="Georgia, serif" font-size="14">🔥 Nível II — Coração da Montanha</text>
+  <text x="232" y="264" fill="#b8a98f" font-family="Georgia, serif" font-size="10">forjas · Coração Ardente · Galeria do Eco</text>
+  <circle cx="300" cy="232" r="9" fill="#ff8a3d"/>
+  <!-- level III -->
+  <text x="232" y="372" fill="#f1e7d6" font-family="Georgia, serif" font-size="14">🌋 Nível III — Profundezas Ardentes</text>
+  <text x="250" y="388" fill="#b8a98f" font-family="Georgia, serif" font-size="10">minas · Sala da Escória · Abismo de Zuldur</text>
+  <path d="M270 405 q30 -20 60 0 q-30 24 -60 0 Z" fill="#b23b32"/>
+  <text x="20" y="34" fill="#e3b341" font-family="Georgia, serif" font-size="18">⛰️ Khar-Zuldur — corte</text>
+</svg>

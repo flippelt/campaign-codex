@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="440" viewBox="0 0 680 440">
+  <rect width="680" height="440" fill="#1c1712"/>
+  <rect x="8" y="8" width="664" height="424" fill="none" stroke="#e3b341" stroke-width="2" opacity="0.6"/>
+  <!-- north ice -->
+  <path d="M40 40 H640 V120 Q480 150 340 120 T40 130 Z" fill="#26303a" opacity="0.7"/>
+  <text x="56" y="70" fill="#9fd3e6" font-family="Georgia, serif" font-size="15">❄️ Norte Longínquo</text>
+  <text x="120" y="104" fill="#cfe8f2" font-family="Georgia, serif" font-size="12">Khar-Zuldur ⛰️   ·   Duas-Luzes 🌌</text>
+  <!-- central kingdom -->
+  <ellipse cx="300" cy="250" rx="150" ry="80" fill="#2a2018" stroke="#6fae6a" stroke-width="1.4"/>
+  <text x="232" y="232" fill="#f1e7d6" font-family="Georgia, serif" font-size="15">🏰 Greymane</text>
+  <text x="210" y="262" fill="#b8a98f" font-family="Georgia, serif" font-size="12">Kingsbridge · Osascânia · Panshar</text>
+  <!-- forests south -->
+  <path d="M120 360 Q220 320 320 360 T520 360 L520 420 H120 Z" fill="#1e2a16" stroke="#6fae6a" stroke-width="1" opacity="0.8"/>
+  <text x="150" y="398" fill="#9cc77e" font-family="Georgia, serif" font-size="13">🌳 Natlan (florestas do sul)</text>
+  <!-- east desert -->
+  <path d="M500 150 Q610 200 600 320 L660 320 660 150 Z" fill="#3a2418" stroke="#c8702a" stroke-width="1"/>
+  <text x="498" y="240" fill="#e0a766" font-family="Georgia, serif" font-size="12">🔥 Campos</text>
+  <text x="498" y="258" fill="#e0a766" font-family="Georgia, serif" font-size="12">Vermelhos</text>
+  <text x="512" y="300" fill="#caa06a" font-family="Georgia, serif" font-size="11">Al Faiheer 🏜️</text>
+  <!-- cygnus / ilfelin -->
+  <circle cx="120" cy="250" r="34" fill="#222b33" stroke="#7fb6c8" stroke-width="1.2"/>
+  <text x="92" y="254" fill="#bfe0ec" font-family="Georgia, serif" font-size="12">⚙️ Cygnus</text>
+  <circle cx="470" cy="250" r="30" fill="#2a2236" stroke="#b79be0" stroke-width="1.2"/>
+  <text x="446" y="254" fill="#d8c6f2" font-family="Georgia, serif" font-size="11">✨ Ilfelin</text>
+  <!-- west arrow to Draco Praetoria -->
+  <text x="20" y="250" fill="#c0573f" font-family="Georgia, serif" font-size="11">🐉 oeste →</text>
+  <text x="20" y="266" fill="#c0573f" font-family="Georgia, serif" font-size="10">Draco Praetoria</text>
+  <text x="22" y="30" fill="#e3b341" font-family="Georgia, serif" font-size="20">🌍 Mirrus — ano 3100</text>
+</svg>
