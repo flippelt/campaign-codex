@@ -72,15 +72,68 @@ img {
 
 .topbar__spacer { flex: 1; }
 
+/* Campaign switcher — a no-JS <details> dropdown of links. */
 .campaign-switch {
+  position: relative;
+}
+.campaign-switch > summary {
+  list-style: none;
+  cursor: pointer;
+  user-select: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  max-width: 56vw;
   background: var(--surface-2);
   color: var(--text);
   border: 1px solid var(--border);
   border-radius: 999px;
-  padding: 7px 12px;
-  font-family: var(--font);
+  padding: 7px 14px;
   font-size: 0.9rem;
-  cursor: pointer;
+  line-height: 1.2;
+  white-space: nowrap;
+}
+.campaign-switch > summary::-webkit-details-marker {
+  display: none;
+}
+.campaign-switch__label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.campaign-switch__caret {
+  color: var(--muted);
+  transition: transform 0.15s ease;
+}
+.campaign-switch[open] .campaign-switch__caret {
+  transform: rotate(180deg);
+}
+.campaign-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 6px);
+  min-width: 220px;
+  z-index: 30;
+  display: flex;
+  flex-direction: column;
+  padding: 6px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  box-shadow: 0 14px 34px rgba(0, 0, 0, 0.5);
+}
+.campaign-menu a {
+  padding: 9px 12px;
+  border-radius: 8px;
+  color: var(--text);
+  font-size: 0.92rem;
+  white-space: nowrap;
+}
+.campaign-menu a:hover {
+  background: var(--surface-2);
+  text-decoration: none;
+}
+.campaign-menu a[aria-current='page'] {
+  color: var(--accent);
 }
 
 .hamburger {

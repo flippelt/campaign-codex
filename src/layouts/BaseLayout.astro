@@ -23,6 +23,7 @@ interface Props {
 const { title, description, theme = 'fantasy', campaigns, current, sidebar } =
   Astro.props
 const hasSidebar = !!sidebar
+const currentCampaign = campaigns.find((c) => c.id === current)
 ---
 
 <!doctype html>
@@ -43,14 +44,26 @@ const hasSidebar = !!sidebar
         <a class="topbar__brand" href={withBase('/')}>📚 <span>Campaign Codex</span></a>
         <span class="topbar__spacer"></span>
         {campaigns.length > 0 && (
-          <select class="campaign-switch" id="campaignSwitch" aria-label="Trocar de campanha">
-            <option value="" disabled selected={!current}>campanha…</option>
-            {campaigns.map((c) => (
-              <option value={withBase(`/${c.id}/`)} selected={c.id === current}>
-                {c.data.emoji} {c.data.name}
-              </option>
-            ))}
-          </select>
+          <details class="campaign-switch" id="campaignSwitch">
+            <summary aria-label="Trocar de campanha">
+              <span class="campaign-switch__label">
+                {currentCampaign
+                  ? `${currentCampaign.data.emoji} ${currentCampaign.data.name}`
+                  : '📚 Campanhas'}
+              </span>
+              <span class="campaign-switch__caret" aria-hidden="true">▾</span>
+            </summary>
+            <nav class="campaign-menu">
+              {campaigns.map((c) => (
+                <a
+                  href={withBase(`/${c.id}/`)}
+                  aria-current={c.id === current ? 'page' : undefined}
+                >
+                  {c.data.emoji} {c.data.name}
+                </a>
+              ))}
+            </nav>
+          </details>
         )}
       </header>
 
@@ -78,27 +91,26 @@ const hasSidebar = !!sidebar
       </footer>
     </div>
 
-    {hasSidebar && (
-      <script is:inline>
-        {`
-        const shell = document.getElementById('shell')
-        const toggle = document.getElementById('navToggle')
-        const scrim = document.getElementById('navScrim')
-        const close = () => shell.classList.remove('nav-open')
-        toggle?.addEventListener('click', () => shell.classList.toggle('nav-open'))
-        scrim?.addEventListener('click', close)
-        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close() })
-        `}
-      </script>
-    )}
-    <script is:inline>
-      {`
+    <script>
+      // Mobile nav drawer (when a sidebar is present).
+      const shell = document.getElementById('shell')
+      const toggle = document.getElementById('navToggle')
+      const scrim = document.getElementById('navScrim')
+      const closeNav = () => shell?.classList.remove('nav-open')
+      toggle?.addEventListener('click', () => shell?.classList.toggle('nav-open'))
+      scrim?.addEventListener('click', closeNav)
+
+      // Campaign dropdown (<details>): close on outside click or Escape.
       const sw = document.getElementById('campaignSwitch')
-      sw?.addEventListener('change', (e) => {
-        const v = e.target.value
-        if (v) window.location.href = v
+      document.addEventListener('click', (e) => {
+        if (sw && sw.open && !sw.contains(e.target as Node)) sw.open = false
       })
-      `}
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          closeNav()
+          if (sw) sw.open = false
+        }
+      })
     </script>
   </body>
 </html>
