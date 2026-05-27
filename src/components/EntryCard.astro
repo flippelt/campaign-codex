@@ -1,0 +1,28 @@
+---
+import { entryHref, parseEntryId, TYPES, withBase, asset, isTypeKey, type Entry } from '../lib/codex'
+
+interface Props {
+  entry: Entry
+}
+
+const { entry } = Astro.props
+const { type } = parseEntryId(entry.id)
+const typeMeta = isTypeKey(type) ? TYPES[type] : undefined
+const { title, emoji, summary, image, status, faction, role, date, tags } = entry.data
+// Searchable text for the client-side filter on listing pages.
+const haystack = [title, summary, status, faction, role, ...tags].filter(Boolean).join(' ').toLowerCase()
+---
+
+<a class="card" href={withBase(entryHref(entry))} data-search={haystack}>
+  {image && <img class="card__cover" src={asset(image)} alt={title} loading="lazy" />}
+  <span class="card__emoji">{emoji ?? typeMeta?.emoji ?? '📄'}</span>
+  <h3 class="card__title">{title}</h3>
+  {summary && <p class="card__summary">{summary}</p>}
+  <div class="chips">
+    {typeMeta && <span class="chip chip--accent">{typeMeta.emoji} {typeMeta.singular}</span>}
+    {status && <span class="chip">{status}</span>}
+    {faction && <span class="chip">🏴 {faction}</span>}
+    {role && <span class="chip">🎖️ {role}</span>}
+    {date && <span class="chip">🕑 {date}</span>}
+  </div>
+</a>

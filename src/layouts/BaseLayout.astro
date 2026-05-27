@@ -1,0 +1,104 @@
+---
+import '../styles/global.css'
+import Nav from '../components/Nav.astro'
+import { withBase, type Campaign } from '../lib/codex'
+
+interface SidebarData {
+  campaignId: string
+  campaignName: string
+  emoji: string
+  counts: Record<string, number>
+  active: string // type key or 'home'
+}
+
+interface Props {
+  title: string
+  description?: string
+  theme?: string
+  campaigns: Campaign[]
+  current?: string
+  sidebar?: SidebarData
+}
+
+const { title, description, theme = 'fantasy', campaigns, current, sidebar } =
+  Astro.props
+const hasSidebar = !!sidebar
+---
+
+<!doctype html>
+<html lang="pt-br" data-theme={theme}>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+  </head>
+  <body>
+    <div class={`shell${hasSidebar ? '' : ' shell--nosidebar'}`} id="shell">
+      <header class="topbar">
+        {hasSidebar && (
+          <button class="hamburger" id="navToggle" aria-label="Abrir menu">☰</button>
+        )}
+        <a class="topbar__brand" href={withBase('/')}>📚 <span>Campaign Codex</span></a>
+        <span class="topbar__spacer"></span>
+        {campaigns.length > 0 && (
+          <select class="campaign-switch" id="campaignSwitch" aria-label="Trocar de campanha">
+            <option value="" disabled selected={!current}>campanha…</option>
+            {campaigns.map((c) => (
+              <option value={withBase(`/${c.id}/`)} selected={c.id === current}>
+                {c.data.emoji} {c.data.name}
+              </option>
+            ))}
+          </select>
+        )}
+      </header>
+
+      {hasSidebar && (
+        <>
+          <div class="scrim" id="navScrim"></div>
+          <aside class="sidebar" id="sidebar">
+            <Nav
+              campaignId={sidebar!.campaignId}
+              campaignName={sidebar!.campaignName}
+              emoji={sidebar!.emoji}
+              counts={sidebar!.counts}
+              active={sidebar!.active}
+            />
+          </aside>
+        </>
+      )}
+
+      <main class="main">
+        <slot />
+      </main>
+
+      <footer class="foot">
+        Campaign Codex · wiki de campanhas de RPG · feito com Astro
+      </footer>
+    </div>
+
+    {hasSidebar && (
+      <script is:inline>
+        {`
+        const shell = document.getElementById('shell')
+        const toggle = document.getElementById('navToggle')
+        const scrim = document.getElementById('navScrim')
+        const close = () => shell.classList.remove('nav-open')
+        toggle?.addEventListener('click', () => shell.classList.toggle('nav-open'))
+        scrim?.addEventListener('click', close)
+        document.addEventListener('keydown', (e) => { if (e.key === 'Escape') close() })
+        `}
+      </script>
+    )}
+    <script is:inline>
+      {`
+      const sw = document.getElementById('campaignSwitch')
+      sw?.addEventListener('change', (e) => {
+        const v = e.target.value
+        if (v) window.location.href = v
+      })
+      `}
+    </script>
+  </body>
+</html>

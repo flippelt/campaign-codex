@@ -1,0 +1,41 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getCampaigns, typeCounts, THEME_LABELS, withBase } from '../lib/codex'
+
+const campaigns = await getCampaigns()
+const counts = Object.fromEntries(
+  await Promise.all(campaigns.map(async (c) => [c.id, await typeCounts(c.id)] as const))
+)
+const total = (id: string) =>
+  Object.values(counts[id] as Record<string, number>).reduce((a, b) => a + b, 0)
+---
+
+<BaseLayout title="Campaign Codex" description="Wiki de campanhas de RPG" campaigns={campaigns}>
+  <div class="page-head">
+    <h1>📚 Campaign Codex</h1>
+    <p>
+      Um wiki para suas campanhas de RPG — história, mapas, acontecimentos, NPCs e
+      personagens. Escolha uma campanha para começar.
+    </p>
+  </div>
+
+  {campaigns.length === 0 ? (
+    <p class="empty">Nenhuma campanha ainda. Crie <code>src/content/campaigns/&lt;id&gt;.md</code>.</p>
+  ) : (
+    <div class="grid">
+      {campaigns.map((c) => (
+        <a class="card" href={withBase(`/${c.id}/`)} data-theme={c.data.theme}>
+          <span class="card__emoji">{c.data.emoji}</span>
+          <h3 class="card__title">{c.data.name}</h3>
+          {c.data.summary && <p class="card__summary">{c.data.summary}</p>}
+          <div class="chips">
+            <span class="chip chip--accent">
+              {THEME_LABELS[c.data.theme]?.emoji} {THEME_LABELS[c.data.theme]?.label ?? c.data.theme}
+            </span>
+            <span class="chip">{total(c.id)} entradas</span>
+          </div>
+        </a>
+      ))}
+    </div>
+  )}
+</BaseLayout>

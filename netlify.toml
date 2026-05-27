@@ -1,0 +1,8 @@
+# Full site at the domain root (base "/"). Connect the repo on Netlify and
+# deploy — no extra settings. The public demo (a subset) goes to GitHub Pages.
+[build]
+  command = "npm run build"
+  publish = "dist"
+
+[build.environment]
+  NODE_VERSION = "22"

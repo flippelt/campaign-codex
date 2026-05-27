@@ -1,0 +1,64 @@
+---
+import { render } from 'astro:content'
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import EntryCard from '../../components/EntryCard.astro'
+import {
+  getCampaigns, getCampaign, getEntries, typeCounts,
+  TYPE_KEYS, TYPES, THEME_LABELS, withBase
+} from '../../lib/codex'
+
+export async function getStaticPaths() {
+  const campaigns = await getCampaigns()
+  return campaigns.map((c) => ({ params: { campaign: c.id } }))
+}
+
+const { campaign: id } = Astro.params
+const campaign = await getCampaign(id!)
+if (!campaign) return Astro.redirect(withBase('/'))
+
+const campaigns = await getCampaigns()
+const counts = await typeCounts(id!)
+const { Content } = await render(campaign)
+
+// Sections with their first few entries.
+const sections = await Promise.all(
+  TYPE_KEYS.map(async (key) => ({ key, entries: (await getEntries(id!, key)).slice(0, 6) }))
+)
+const theme = THEME_LABELS[campaign.data.theme]
+---
+
+<BaseLayout
+  title={`${campaign.data.name} · Campaign Codex`}
+  description={campaign.data.summary}
+  theme={campaign.data.theme}
+  campaigns={campaigns}
+  current={id}
+  sidebar={{ campaignId: id!, campaignName: campaign.data.name, emoji: campaign.data.emoji, counts, active: 'home' }}
+>
+  <div class="page-head">
+    <h1>{campaign.data.emoji} {campaign.data.name}</h1>
+    <p>
+      <span class="chip chip--accent">{theme?.emoji} {theme?.label ?? campaign.data.theme}</span>
+    </p>
+  </div>
+
+  {campaign.data.summary && <p style="color:var(--muted);max-width:72ch">{campaign.data.summary}</p>}
+
+  <div class="prose"><Content /></div>
+
+  {sections.map(({ key, entries }) =>
+    entries.length > 0 ? (
+      <section style="margin-top:34px">
+        <h2 style="display:flex;align-items:center;gap:10px">
+          <span>{TYPES[key].emoji}</span> {TYPES[key].label}
+          <a style="margin-left:auto;font-size:0.85rem" href={withBase(`/${id}/${key}/`)}>
+            ver todos ({counts[key]}) →
+          </a>
+        </h2>
+        <div class="grid">
+          {entries.map((entry) => <EntryCard entry={entry} />)}
+        </div>
+      </section>
+    ) : null
+  )}
+</BaseLayout>

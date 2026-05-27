@@ -1,0 +1,88 @@
+---
+import { getCollection, render } from 'astro:content'
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import {
+  getCampaigns, getCampaign, typeCounts, parseEntryId, allowedCampaignIds,
+  TYPES, withBase, asset, isTypeKey, type Entry
+} from '../../../lib/codex'
+
+export async function getStaticPaths() {
+  const all = await getCollection('entries')
+  const allowed = await allowedCampaignIds()
+  return all
+    .filter((e) => import.meta.env.DEV || !e.data.draft)
+    .map((e) => ({ entry: e, parts: parseEntryId(e.id) }))
+    .filter(({ parts }) => allowed.has(parts.campaign))
+    .map(({ entry, parts }) => ({
+      params: { campaign: parts.campaign, type: parts.type, entry: parts.slug },
+      props: { entry }
+    }))
+}
+
+interface Props { entry: Entry }
+const { entry } = Astro.props
+const { campaign: id, type } = parseEntryId(entry.id)
+const campaign = await getCampaign(id)
+if (!campaign) return Astro.redirect(withBase('/'))
+
+const campaigns = await getCampaigns()
+const counts = await typeCounts(id)
+const meta = isTypeKey(type) ? TYPES[type] : undefined
+const { Content } = await render(entry)
+const d = entry.data
+
+const facts: [string, string][] = []
+if (d.status) facts.push(['Status', d.status])
+if (d.role) facts.push(['Papel', d.role])
+if (d.faction) facts.push(['Facção', d.faction])
+if (d.location) facts.push(['Local', d.location])
+if (d.date) facts.push(['Data', d.date])
+const hasAside = !!d.image || facts.length > 0 || d.tags.length > 0
+---
+
+<BaseLayout
+  title={`${d.title} · ${campaign.data.name}`}
+  description={d.summary}
+  theme={campaign.data.theme}
+  campaigns={campaigns}
+  current={id}
+  sidebar={{ campaignId: id, campaignName: campaign.data.name, emoji: campaign.data.emoji, counts, active: type }}
+>
+  <p class="breadcrumb">
+    <a href={withBase(`/${id}/`)}>{campaign.data.emoji} {campaign.data.name}</a> ›
+    <a href={withBase(`/${id}/${type}/`)}>{meta?.label ?? type}</a> ›
+    {d.title}
+  </p>
+
+  <div class="page-head">
+    <h1>{d.emoji ?? meta?.emoji ?? '📄'} {d.title}</h1>
+    {d.summary && <p>{d.summary}</p>}
+  </div>
+
+  <article class={hasAside ? 'entry' : ''}>
+    <div class="prose">
+      <Content />
+    </div>
+
+    {hasAside && (
+      <aside class="aside">
+        {d.image && <img class="aside__img" src={asset(d.image)} alt={d.title} />}
+        {facts.length > 0 && (
+          <dl>
+            {facts.map(([k, v]) => (
+              <>
+                <dt>{k}</dt>
+                <dd>{v}</dd>
+              </>
+            ))}
+          </dl>
+        )}
+        {d.tags.length > 0 && (
+          <div class="chips" style="margin-top:12px">
+            {d.tags.map((t) => <span class="chip">#{t}</span>)}
+          </div>
+        )}
+      </aside>
+    )}
+  </article>
+</BaseLayout>

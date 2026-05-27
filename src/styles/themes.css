@@ -1,0 +1,77 @@
+/* Per-campaign skins. The active theme is set via data-theme on <html>.
+   Each theme only overrides CSS variables; layout lives in global.css. */
+
+:root {
+  --radius: 14px;
+  --maxw: 1180px;
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --serif: "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --mono: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+}
+
+/* Default / fallback (fantasy-ish) */
+:root,
+[data-theme="fantasy"] {
+  --bg: #1c1712;
+  --surface: #261f18;
+  --surface-2: #322820;
+  --text: #f1e7d6;
+  --muted: #b8a98f;
+  --accent: #e3b341;
+  --accent-2: #6fae6a;
+  --border: #463829;
+  --font: var(--serif);
+  --font-head: var(--serif);
+}
+
+[data-theme="sci-fi"] {
+  --bg: #0a0f14;
+  --surface: #111a22;
+  --surface-2: #16242f;
+  --text: #e6f1f7;
+  --muted: #8aa3b2;
+  --accent: #38d0e0;
+  --accent-2: #6ad99a;
+  --border: #1f3340;
+  --font: var(--sans);
+  --font-head: var(--sans);
+}
+
+[data-theme="cyberpunk"] {
+  --bg: #0c0612;
+  --surface: #160c20;
+  --surface-2: #20102e;
+  --text: #f6e9ff;
+  --muted: #b491c7;
+  --accent: #ff2e88;
+  --accent-2: #21e6ff;
+  --border: #3a1b4f;
+  --font: var(--mono);
+  --font-head: var(--mono);
+}
+
+[data-theme="fallout"] {
+  --bg: #0a0d08;
+  --surface: #121707;
+  --surface-2: #1a2110;
+  --text: #d8ff9e;
+  --muted: #8fae6a;
+  --accent: #aef03f;
+  --accent-2: #f0b53f;
+  --border: #2a3614;
+  --font: var(--mono);
+  --font-head: var(--mono);
+}
+
+[data-theme="warhammer"] {
+  --bg: #100e0c;
+  --surface: #1a1714;
+  --surface-2: #241f1a;
+  --text: #ede4d2;
+  --muted: #a9988a;
+  --accent: #c8a13a;
+  --accent-2: #b23b32;
+  --border: #3a2f25;
+  --font: var(--serif);
+  --font-head: var(--serif);
+}

@@ -1,0 +1,40 @@
+---
+import { TYPES, TYPE_KEYS, withBase } from '../lib/codex'
+
+interface Props {
+  campaignId: string
+  campaignName: string
+  emoji: string
+  counts: Record<string, number>
+  active: string
+}
+
+const { campaignId, campaignName, emoji, counts, active } = Astro.props
+---
+
+<nav>
+  <p class="sidebar__title">Campanha</p>
+  <a
+    class="navlink"
+    href={withBase(`/${campaignId}/`)}
+    aria-current={active === 'home' ? 'page' : undefined}
+  >
+    <span class="navlink__emoji">{emoji}</span>
+    <span>{campaignName}</span>
+  </a>
+
+  <p class="sidebar__title" style="margin-top:18px">Conteúdo</p>
+  {
+    TYPE_KEYS.map((key) => (
+      <a
+        class="navlink"
+        href={withBase(`/${campaignId}/${key}/`)}
+        aria-current={active === key ? 'page' : undefined}
+      >
+        <span class="navlink__emoji">{TYPES[key].emoji}</span>
+        <span>{TYPES[key].label}</span>
+        <span class="navlink__count">{counts[key] ?? 0}</span>
+      </a>
+    ))
+  }
+</nav>
