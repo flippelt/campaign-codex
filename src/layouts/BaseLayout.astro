@@ -91,6 +91,12 @@ const currentCampaign = campaigns.find((c) => c.id === current)
       </footer>
     </div>
 
+    <!-- Click-to-zoom lightbox for content images. -->
+    <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Imagem ampliada">
+      <button class="lightbox__close" id="lightboxClose" aria-label="Fechar">✕</button>
+      <img class="lightbox__img" id="lightboxImg" src="" alt="" />
+    </div>
+
     <script>
       // Mobile nav drawer (when a sidebar is present).
       const shell = document.getElementById('shell')
@@ -105,10 +111,39 @@ const currentCampaign = campaigns.find((c) => c.id === current)
       document.addEventListener('click', (e) => {
         if (sw && sw.open && !sw.contains(e.target as Node)) sw.open = false
       })
+
+      // Image lightbox: click any content image (entry aside or prose body)
+      // to view it full-screen. Close via the × button, backdrop, or Escape.
+      const lightbox = document.getElementById('lightbox') as HTMLElement | null
+      const lightboxImg = document.getElementById('lightboxImg') as HTMLImageElement | null
+      const lightboxClose = document.getElementById('lightboxClose')
+      const openLightbox = (img: HTMLImageElement) => {
+        if (!lightbox || !lightboxImg) return
+        lightboxImg.src = img.currentSrc || img.src
+        lightboxImg.alt = img.alt
+        lightbox.hidden = false
+        document.body.classList.add('lightbox-open')
+      }
+      const closeLightbox = () => {
+        if (!lightbox || !lightboxImg) return
+        lightbox.hidden = true
+        lightboxImg.src = ''
+        document.body.classList.remove('lightbox-open')
+      }
+      document.querySelectorAll<HTMLImageElement>('.aside__img, .prose img').forEach((img) => {
+        img.classList.add('zoomable')
+        img.addEventListener('click', () => openLightbox(img))
+      })
+      lightboxClose?.addEventListener('click', closeLightbox)
+      lightbox?.addEventListener('click', (e) => {
+        if (e.target === lightbox) closeLightbox()
+      })
+
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
           closeNav()
           if (sw) sw.open = false
+          if (lightbox && !lightbox.hidden) closeLightbox()
         }
       })
     </script>
