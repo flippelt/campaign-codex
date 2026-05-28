@@ -57,14 +57,16 @@ export function entryHref(entry: Entry) {
 
 const visible = (e: Entry) => import.meta.env.DEV || !e.data.draft
 
-// The Pages build runs with `--mode demo`: only campaigns opted in with
-// `demo: true` are published there. Every other build shows everything.
+// The Pages build runs with `--mode demo`: it publishes ONLY the campaigns
+// opted in with `demo: true`. The main build (Netlify) is the inverse — it
+// publishes everything EXCEPT the demo campaigns, so the two deploys show
+// disjoint sets and the demo campaigns never appear on the main site.
 export const IS_DEMO = import.meta.env.MODE === 'demo'
 
 export async function getCampaigns(): Promise<Campaign[]> {
   const all = await getCollection('campaigns')
   return all
-    .filter((c) => !IS_DEMO || c.data.demo)
+    .filter((c) => (IS_DEMO ? c.data.demo : !c.data.demo))
     .sort((a, b) => a.data.order - b.data.order || a.data.name.localeCompare(b.data.name))
 }
 
