@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css'
+import '../lib/fonts'
 import { ClientRouter } from 'astro:transitions'
 import Nav from '../components/Nav.astro'
 import { withBase, type Campaign } from '../lib/codex'
@@ -40,7 +41,7 @@ const ogImageUrl = ogImage ? new URL(withBase(ogImage), Astro.site ?? Astro.url)
 ---
 
 <!doctype html>
-<html lang="pt-br" data-theme={theme} data-base-url={import.meta.env.BASE_URL}>
+<html lang="pt-BR" data-theme={theme} data-base-url={import.meta.env.BASE_URL}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />

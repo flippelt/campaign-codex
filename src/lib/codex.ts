@@ -16,13 +16,8 @@ export type TypeKey = keyof typeof TYPES
 export const TYPE_KEYS = Object.keys(TYPES) as TypeKey[]
 export const isTypeKey = (s: string): s is TypeKey => s in TYPES
 
-export const THEME_LABELS: Record<string, { label: string; emoji: string }> = {
-  'sci-fi': { label: 'Sci-Fi', emoji: '🚀' },
-  fantasy: { label: 'Fantasia', emoji: '⚔️' },
-  cyberpunk: { label: 'Cyberpunk', emoji: '🌃' },
-  fallout: { label: 'Fallout', emoji: '☢️' },
-  warhammer: { label: 'Warhammer 40K', emoji: '💀' }
-}
+// Theme display metadata lives in one place (src/lib/themes.ts).
+export { THEME_LABELS } from './themes'
 
 // Prefix an internal path with the configured build base (so links work
 // under a GitHub Pages subpath as well as the domain root).

@@ -1,8 +1,10 @@
 import { defineCollection, z } from 'astro:content'
 import { glob } from 'astro/loaders'
+import { THEME_IDS } from './lib/themes'
 
-// THEMES — palettes/fonts live in src/styles/themes.css keyed by data-theme.
-export const THEME_IDS = ['sci-fi', 'fantasy', 'cyberpunk', 'fallout', 'warhammer'] as const
+// THEME_IDS is the single source of truth (src/lib/themes.ts); palettes/fonts
+// live in src/styles/themes.css keyed by the same data-theme id.
+export { THEME_IDS }
 
 // One file per campaign: src/content/campaigns/<id>.md
 const campaigns = defineCollection({

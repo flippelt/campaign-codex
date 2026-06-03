@@ -17,6 +17,21 @@
   },
   "devDependencies": {
     "@astrojs/sitemap": "^3.7.3",
+    "@fontsource/chakra-petch": "^5.2.7",
+    "@fontsource/cinzel": "^5.2.8",
+    "@fontsource/eb-garamond": "^5.2.7",
+    "@fontsource/exo-2": "^5.2.8",
+    "@fontsource/im-fell-english": "^5.2.6",
+    "@fontsource/im-fell-english-sc": "^5.2.6",
+    "@fontsource/michroma": "^5.2.8",
+    "@fontsource/orbitron": "^5.2.8",
+    "@fontsource/oswald": "^5.2.8",
+    "@fontsource/rajdhani": "^5.2.7",
+    "@fontsource/saira-stencil-one": "^5.2.8",
+    "@fontsource/share-tech-mono": "^5.2.7",
+    "@fontsource/teko": "^5.2.7",
+    "@fontsource/unifrakturcook": "^5.2.8",
+    "@fontsource/vt323": "^5.2.7",
     "prettier": "^3.8.3",
     "prettier-plugin-astro": "^0.14.1"
   }

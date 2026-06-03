@@ -1,7 +1,16 @@
 /* Per-campaign skins. The active theme is set via data-theme on <html>.
-   Each theme only overrides CSS variables; layout lives in global.css. */
+   Each theme only overrides CSS variables; layout lives in global.css.
+
+   Every color is light-dark(LIGHT, DARK): the browser picks one based on the
+   element's `color-scheme`. The mode toggle flips that via data-mode on <html>
+   (light / dark); with no data-mode we expose both and follow the OS. This is
+   why each theme is a single block instead of three (dark + two light copies).
+
+   Theme ids are declared once in src/lib/themes.ts; the @font-face rules for
+   the families referenced below are pulled in by src/lib/fonts.ts. */
 
 :root {
+  color-scheme: light dark;
   --radius: 14px;
   --maxw: 1180px;
   --sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -9,179 +18,151 @@
   --mono: ui-monospace, 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
 }
 
-/* Default / fallback (fantasy-ish) */
+/* Mode toggle: force a scheme, or (no attribute) follow the OS. */
+[data-mode='light'] {
+  color-scheme: light;
+}
+[data-mode='dark'] {
+  color-scheme: dark;
+}
+
+/* === Fantasy (default / fallback) === */
 :root,
 [data-theme='fantasy'] {
-  --bg: #1c1712;
-  --surface: #261f18;
-  --surface-2: #322820;
-  --text: #f1e7d6;
-  --muted: #b8a98f;
-  --accent: #e3b341;
-  --accent-2: #6fae6a;
-  --border: #463829;
-  --font: var(--serif);
-  --font-head: var(--serif);
+  --bg: light-dark(#f6efe1, #1c1712);
+  --surface: light-dark(#fdf7e7, #261f18);
+  --surface-2: light-dark(#ede1c5, #322820);
+  --text: light-dark(#2a1f12, #f1e7d6);
+  --muted: light-dark(#6b5a3f, #b8a98f);
+  --accent: light-dark(#a87410, #e3b341);
+  --accent-2: light-dark(#486a3e, #6fae6a);
+  --border: light-dark(#d6c9a8, #463829);
+  --font: 'EB Garamond', var(--serif);
+  --font-head: 'Cinzel', var(--serif);
 }
 
+/* === Sci-Fi === */
 [data-theme='sci-fi'] {
-  --bg: #0a0f14;
-  --surface: #111a22;
-  --surface-2: #16242f;
-  --text: #e6f1f7;
-  --muted: #8aa3b2;
-  --accent: #38d0e0;
-  --accent-2: #6ad99a;
-  --border: #1f3340;
-  --font: var(--sans);
-  --font-head: var(--sans);
+  --bg: light-dark(#eaf2f7, #0a0f14);
+  --surface: light-dark(#ffffff, #111a22);
+  --surface-2: light-dark(#d8e6ee, #16242f);
+  --text: light-dark(#0c1a23, #e6f1f7);
+  --muted: light-dark(#4a6577, #8aa3b2);
+  --accent: light-dark(#086b78, #38d0e0);
+  --accent-2: light-dark(#2f8a55, #6ad99a);
+  --border: light-dark(#b9cfdb, #1f3340);
+  --font: 'Exo 2', var(--sans);
+  --font-head: 'Orbitron', var(--sans);
 }
 
-[data-theme='cyberpunk'] {
-  --bg: #0c0612;
-  --surface: #160c20;
-  --surface-2: #20102e;
-  --text: #f6e9ff;
-  --muted: #b491c7;
-  --accent: #ff2e88;
-  --accent-2: #21e6ff;
-  --border: #3a1b4f;
-  --font: var(--mono);
-  --font-head: var(--mono);
+/* === Cthulhu — abyssal verdigris + eldritch violet, antiquarian print === */
+[data-theme='cthulhu'] {
+  --bg: light-dark(#e6ebe4, #0b1110);
+  --surface: light-dark(#f2f5ee, #121a18);
+  --surface-2: light-dark(#d4ddd0, #1a2421);
+  --text: light-dark(#16201c, #dde7df);
+  --muted: light-dark(#566159, #8a9a8f);
+  --accent: light-dark(#2f7a5e, #5fae8e);
+  --accent-2: light-dark(#5d4a86, #9a7bbf);
+  --border: light-dark(#bcc8bd, #26332e);
+  --font: 'IM Fell English', var(--serif);
+  --font-head: 'IM Fell English SC', var(--serif);
 }
 
+/* === WH40K · Inquisition — black, blood red, gold; gothic blackletter === */
+[data-theme='warhammer-inquisition'] {
+  --bg: light-dark(#efe7df, #100a0a);
+  --surface: light-dark(#f8f1e8, #1a1110);
+  --surface-2: light-dark(#e3d6c8, #241716);
+  --text: light-dark(#21140f, #ece0d2);
+  --muted: light-dark(#6a5248, #a8928a);
+  --accent: light-dark(#9a2820, #c0392b);
+  --accent-2: light-dark(#8a6a14, #c8a13a);
+  --border: light-dark(#cdbba8, #3a2420);
+  --font: 'EB Garamond', var(--serif);
+  --font-head: 'UnifrakturCook', var(--serif);
+}
+
+/* === WH40K · Astra Militarum — olive/khaki, brass; military stencil === */
+[data-theme='warhammer-astra-militarum'] {
+  --bg: light-dark(#ecebdd, #0f1109);
+  --surface: light-dark(#f6f5e7, #181b0f);
+  --surface-2: light-dark(#dcdcc2, #222614);
+  --text: light-dark(#1c1d0f, #e7e6d2);
+  --muted: light-dark(#5e5e44, #a3a085);
+  --accent: light-dark(#7a6a14, #b6a13a);
+  --accent-2: light-dark(#566a1c, #7a8a3a);
+  --border: light-dark(#c8c8a4, #33371f);
+  --font: 'Oswald', var(--sans);
+  --font-head: 'Saira Stencil One', var(--sans);
+}
+
+/* === WH40K · Space Marines — Ultramarines blue + gold; heavy display === */
+[data-theme='warhammer-space-marines'] {
+  --bg: light-dark(#e8edf6, #070b14);
+  --surface: light-dark(#f4f7fc, #0f1626);
+  --surface-2: light-dark(#d3deef, #172238);
+  --text: light-dark(#0c1730, #e6edf8);
+  --muted: light-dark(#48597a, #92a2c0);
+  --accent: light-dark(#1f5bb0, #3a7bd5);
+  --accent-2: light-dark(#9a7d14, #d4af37);
+  --border: light-dark(#b6c6e0, #203052);
+  --font: 'Exo 2', var(--sans);
+  --font-head: 'Teko', var(--sans);
+}
+
+/* === Cyberpunk RED — aggressive red + cyan, near-black === */
+[data-theme='cyberpunk-red'] {
+  --bg: light-dark(#fae9ec, #0d0608);
+  --surface: light-dark(#ffffff, #16090c);
+  --surface-2: light-dark(#f3d3d9, #220d12);
+  --text: light-dark(#2a0810, #ffe9ec);
+  --muted: light-dark(#7a4750, #c79199);
+  --accent: light-dark(#cc1535, #ff2b4e);
+  --accent-2: light-dark(#0a8a86, #22e0d6);
+  --border: light-dark(#d9b3bb, #3f1620);
+  --font: 'Rajdhani', var(--sans);
+  --font-head: 'Rajdhani', var(--sans);
+}
+
+/* === Blade Runner — neon noir: amber + teal over rainy dark === */
+[data-theme='blade-runner'] {
+  --bg: light-dark(#eef0f1, #0a0c0e);
+  --surface: light-dark(#fafbfb, #121518);
+  --surface-2: light-dark(#dde2e4, #1b2024);
+  --text: light-dark(#14181b, #f0e8dc);
+  --muted: light-dark(#54606a, #9aa0a0);
+  --accent: light-dark(#b86a10, #ff9f43);
+  --accent-2: light-dark(#0f7a88, #37b6c4);
+  --border: light-dark(#c4ccd0, #283036);
+  --font: 'Exo 2', var(--sans);
+  --font-head: 'Michroma', var(--sans);
+}
+
+/* === LANCER — clean mech-UI: orange + teal on charcoal === */
+[data-theme='lancer'] {
+  --bg: light-dark(#eef1f3, #0c0f12);
+  --surface: light-dark(#fafcfd, #14181d);
+  --surface-2: light-dark(#dde4e9, #1d242b);
+  --text: light-dark(#141a1f, #e8edf2);
+  --muted: light-dark(#566570, #94a2ad);
+  --accent: light-dark(#c46a00, #ff9000);
+  --accent-2: light-dark(#11868a, #36c2c4);
+  --border: light-dark(#c2ccd3, #28323a);
+  --font: 'Chakra Petch', var(--sans);
+  --font-head: 'Chakra Petch', var(--sans);
+}
+
+/* === Fallout — Pip-Boy phosphor green + amber CRT, mono terminal === */
 [data-theme='fallout'] {
-  --bg: #0a0d08;
-  --surface: #121707;
-  --surface-2: #1a2110;
-  --text: #d8ff9e;
-  --muted: #8fae6a;
-  --accent: #aef03f;
-  --accent-2: #f0b53f;
-  --border: #2a3614;
-  --font: var(--mono);
-  --font-head: var(--mono);
-}
-
-[data-theme='warhammer'] {
-  --bg: #100e0c;
-  --surface: #1a1714;
-  --surface-2: #241f1a;
-  --text: #ede4d2;
-  --muted: #a9988a;
-  --accent: #c8a13a;
-  --accent-2: #b23b32;
-  --border: #3a2f25;
-  --font: var(--serif);
-  --font-head: var(--serif);
-}
-
-/* === Light mode ===
-   Active when html[data-mode="light"], OR when no mode is set AND the user
-   prefers light. Each theme keeps its accent identity but flips the surfaces. */
-@media (prefers-color-scheme: light) {
-  :root:not([data-mode='dark']),
-  [data-theme='fantasy']:not([data-mode='dark']) {
-    --bg: #f6efe1;
-    --surface: #fdf7e7;
-    --surface-2: #ede1c5;
-    --text: #2a1f12;
-    --muted: #6b5a3f;
-    --accent: #a87410;
-    --accent-2: #486a3e;
-    --border: #d6c9a8;
-  }
-  [data-theme='sci-fi']:not([data-mode='dark']) {
-    --bg: #eaf2f7;
-    --surface: #ffffff;
-    --surface-2: #d8e6ee;
-    --text: #0c1a23;
-    --muted: #4a6577;
-    --accent: #086b78;
-    --accent-2: #2f8a55;
-    --border: #b9cfdb;
-  }
-  [data-theme='cyberpunk']:not([data-mode='dark']) {
-    --bg: #faeef5;
-    --surface: #ffffff;
-    --surface-2: #f0d9e8;
-    --text: #2a0c1e;
-    --muted: #71496a;
-    --accent: #c81d6a;
-    --accent-2: #0a8aa0;
-    --border: #d8b3cc;
-  }
-  [data-theme='fallout']:not([data-mode='dark']) {
-    --bg: #eef1e0;
-    --surface: #f8faea;
-    --surface-2: #dde5be;
-    --text: #1d2410;
-    --muted: #5d6c3d;
-    --accent: #4a7a14;
-    --accent-2: #8a5d10;
-    --border: #c4d09a;
-  }
-  [data-theme='warhammer']:not([data-mode='dark']) {
-    --bg: #f1ece1;
-    --surface: #fbf6ea;
-    --surface-2: #e6dec8;
-    --text: #211a12;
-    --muted: #6a5a44;
-    --accent: #8a6a14;
-    --accent-2: #8a2820;
-    --border: #cdc0a3;
-  }
-}
-
-/* Explicit override: html[data-mode="light"] wins regardless of system pref. */
-[data-mode='light'],
-[data-theme='fantasy'][data-mode='light'] {
-  --bg: #f6efe1;
-  --surface: #fdf7e7;
-  --surface-2: #ede1c5;
-  --text: #2a1f12;
-  --muted: #6b5a3f;
-  --accent: #a87410;
-  --accent-2: #486a3e;
-  --border: #d6c9a8;
-}
-[data-theme='sci-fi'][data-mode='light'] {
-  --bg: #eaf2f7;
-  --surface: #ffffff;
-  --surface-2: #d8e6ee;
-  --text: #0c1a23;
-  --muted: #4a6577;
-  --accent: #086b78;
-  --accent-2: #2f8a55;
-  --border: #b9cfdb;
-}
-[data-theme='cyberpunk'][data-mode='light'] {
-  --bg: #faeef5;
-  --surface: #ffffff;
-  --surface-2: #f0d9e8;
-  --text: #2a0c1e;
-  --muted: #71496a;
-  --accent: #c81d6a;
-  --accent-2: #0a8aa0;
-  --border: #d8b3cc;
-}
-[data-theme='fallout'][data-mode='light'] {
-  --bg: #eef1e0;
-  --surface: #f8faea;
-  --surface-2: #dde5be;
-  --text: #1d2410;
-  --muted: #5d6c3d;
-  --accent: #4a7a14;
-  --accent-2: #8a5d10;
-  --border: #c4d09a;
-}
-[data-theme='warhammer'][data-mode='light'] {
-  --bg: #f1ece1;
-  --surface: #fbf6ea;
-  --surface-2: #e6dec8;
-  --text: #211a12;
-  --muted: #6a5a44;
-  --accent: #8a6a14;
-  --accent-2: #8a2820;
-  --border: #cdc0a3;
+  --bg: light-dark(#eaf1e0, #080b06);
+  --surface: light-dark(#f4f9ea, #0f150b);
+  --surface-2: light-dark(#d9e6c4, #172011);
+  --text: light-dark(#16240c, #bfff9e);
+  --muted: light-dark(#56723c, #7ba85f);
+  --accent: light-dark(#3f7a14, #7dff5e);
+  --accent-2: light-dark(#8a5d10, #f0b53f);
+  --border: light-dark(#bcce9c, #243a18);
+  --font: 'Share Tech Mono', var(--mono);
+  --font-head: 'VT323', var(--mono);
 }
