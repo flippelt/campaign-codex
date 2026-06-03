@@ -33,11 +33,11 @@ Um arquivo por campanha em `src/content/campaigns/<id>.md`:
 ```markdown
 ---
 name: As Crônicas de Valdoran
-theme: fantasy        # sci-fi | fantasy | cyberpunk | fallout | warhammer
+theme: fantasy # sci-fi | fantasy | cyberpunk | fallout | warhammer
 emoji: ⚔️
 summary: Um reino dividido pela Grande Fenda.
 order: 2
-demo: true            # aparece na demo pública (Pages)? padrão: false
+demo: true # aparece na demo pública (Pages)? padrão: false
 ---
 
 Texto de abertura da campanha (Markdown).
@@ -54,13 +54,13 @@ src/content/entries/<campanha>/<tipo>/<slug>.md
 A **campanha** e o **tipo** vêm da pasta — é só soltar o arquivo no lugar certo.
 Tipos disponíveis (nome da pasta):
 
-| Pasta | Tipo |
-|---|---|
-| `lore` | 📜 Lore & História |
-| `npcs` | 🧠 NPCs |
-| `characters` | 🎭 Personagens |
-| `events` | ⚡ Acontecimentos |
-| `maps` | 🗺️ Mapas & Locais |
+| Pasta        | Tipo               |
+| ------------ | ------------------ |
+| `lore`       | 📜 Lore & História |
+| `npcs`       | 🧠 NPCs            |
+| `characters` | 🎭 Personagens     |
+| `events`     | ⚡ Acontecimentos  |
+| `maps`       | 🗺️ Mapas & Locais  |
 
 Exemplo `src/content/entries/valdoran/npcs/mestre-corvo.md`:
 
@@ -73,10 +73,10 @@ status: vivo
 role: Conselheiro Arcano
 faction: Casa Pedravale
 location: Pedravale
-date: Inverno do 12º ano    # eventos; aceita texto ou data
-image: /maps/valdoran.svg   # opcional (em public/ ou URL)
+date: Inverno do 12º ano # eventos; aceita texto ou data
+image: /maps/valdoran.svg # opcional (em public/ ou URL)
 tags: [mago, misterioso]
-draft: false                # rascunho some do build de produção
+draft: false # rascunho some do build de produção
 order: 1
 ---
 

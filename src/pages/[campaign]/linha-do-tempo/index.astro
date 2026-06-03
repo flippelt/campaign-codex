@@ -1,0 +1,133 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import {
+  getCampaigns,
+  getCampaign,
+  getEntries,
+  typeCounts,
+  entryHref,
+  withBase
+} from '../../../lib/codex'
+
+export async function getStaticPaths() {
+  const campaigns = await getCampaigns()
+  return campaigns.map((c) => ({ params: { campaign: c.id } }))
+}
+
+const { campaign: id } = Astro.params
+const campaign = await getCampaign(id!)
+if (!campaign) return Astro.redirect(withBase('/'))
+
+const campaigns = await getCampaigns()
+const counts = await typeCounts(id!)
+
+const events = await getEntries(id!, 'events')
+// Split: dated vs undated. ISO-ish dates sort lexicographically (YYYY-MM-DD).
+// Plain-string in-world dates ("Inverno do 12º ano") preserve frontmatter order.
+const dated = events.filter((e) => e.data.date && /^\d{4}/.test(e.data.date))
+const stringDated = events.filter((e) => e.data.date && !/^\d{4}/.test(e.data.date))
+const undated = events.filter((e) => !e.data.date)
+dated.sort((a, b) => (a.data.date ?? '').localeCompare(b.data.date ?? ''))
+
+// Group ISO-dated events by year for the rail.
+const byYear = new Map<string, typeof events>()
+for (const e of dated) {
+  const year = (e.data.date ?? '').slice(0, 4)
+  const list = byYear.get(year) ?? []
+  list.push(e)
+  byYear.set(year, list)
+}
+---
+
+<BaseLayout
+  title={`Linha do Tempo · ${campaign.data.name}`}
+  theme={campaign.data.theme}
+  campaigns={campaigns}
+  current={id}
+  sidebar={{
+    campaignId: id!,
+    campaignName: campaign.data.name,
+    emoji: campaign.data.emoji,
+    counts,
+    active: 'events'
+  }}
+>
+  <p class="breadcrumb">
+    <a href={withBase(`/${id}/`)}>{campaign.data.emoji} {campaign.data.name}</a> › Linha do Tempo
+  </p>
+  <div class="page-head">
+    <h1>🕑 Linha do Tempo</h1>
+    <p>
+      {events.length}
+      {events.length === 1 ? 'evento' : 'eventos'} —
+      <a href={withBase(`/${id}/events/`)}>ver como lista →</a>
+    </p>
+  </div>
+
+  {
+    events.length === 0 ? (
+      <p class="empty">Nenhum evento cadastrado ainda.</p>
+    ) : (
+      <div class="timeline">
+        {[...byYear.entries()].map(([year, list]) => (
+          <section class="timeline__group">
+            <h2 class="timeline__year">{year}</h2>
+            <ol class="timeline__list">
+              {list.map((e) => (
+                <li class="timeline__item">
+                  <span class="timeline__dot" aria-hidden="true" />
+                  <a class="timeline__link" href={withBase(entryHref(e))}>
+                    <span class="timeline__date">{e.data.date}</span>
+                    <span class="timeline__title">
+                      {e.data.emoji ?? '⚡'} {e.data.title}
+                    </span>
+                    {e.data.summary && <span class="timeline__summary">{e.data.summary}</span>}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        ))}
+
+        {stringDated.length > 0 && (
+          <section class="timeline__group">
+            <h2 class="timeline__year">Datas in-world</h2>
+            <ol class="timeline__list">
+              {stringDated.map((e) => (
+                <li class="timeline__item">
+                  <span class="timeline__dot" aria-hidden="true" />
+                  <a class="timeline__link" href={withBase(entryHref(e))}>
+                    <span class="timeline__date">{e.data.date}</span>
+                    <span class="timeline__title">
+                      {e.data.emoji ?? '⚡'} {e.data.title}
+                    </span>
+                    {e.data.summary && <span class="timeline__summary">{e.data.summary}</span>}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+
+        {undated.length > 0 && (
+          <section class="timeline__group">
+            <h2 class="timeline__year">Sem data</h2>
+            <ol class="timeline__list">
+              {undated.map((e) => (
+                <li class="timeline__item">
+                  <span class="timeline__dot" aria-hidden="true" />
+                  <a class="timeline__link" href={withBase(entryHref(e))}>
+                    <span class="timeline__title">
+                      {e.data.emoji ?? '⚡'} {e.data.title}
+                    </span>
+                    {e.data.summary && <span class="timeline__summary">{e.data.summary}</span>}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </section>
+        )}
+      </div>
+    )
+  }
+</BaseLayout>

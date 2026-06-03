@@ -4,14 +4,14 @@
 :root {
   --radius: 14px;
   --maxw: 1180px;
-  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --serif: "Iowan Old Style", Georgia, "Times New Roman", serif;
-  --mono: ui-monospace, "Cascadia Code", "JetBrains Mono", Consolas, monospace;
+  --sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --serif: 'Iowan Old Style', Georgia, 'Times New Roman', serif;
+  --mono: ui-monospace, 'Cascadia Code', 'JetBrains Mono', Consolas, monospace;
 }
 
 /* Default / fallback (fantasy-ish) */
 :root,
-[data-theme="fantasy"] {
+[data-theme='fantasy'] {
   --bg: #1c1712;
   --surface: #261f18;
   --surface-2: #322820;
@@ -24,7 +24,7 @@
   --font-head: var(--serif);
 }
 
-[data-theme="sci-fi"] {
+[data-theme='sci-fi'] {
   --bg: #0a0f14;
   --surface: #111a22;
   --surface-2: #16242f;
@@ -37,7 +37,7 @@
   --font-head: var(--sans);
 }
 
-[data-theme="cyberpunk"] {
+[data-theme='cyberpunk'] {
   --bg: #0c0612;
   --surface: #160c20;
   --surface-2: #20102e;
@@ -50,7 +50,7 @@
   --font-head: var(--mono);
 }
 
-[data-theme="fallout"] {
+[data-theme='fallout'] {
   --bg: #0a0d08;
   --surface: #121707;
   --surface-2: #1a2110;
@@ -63,7 +63,7 @@
   --font-head: var(--mono);
 }
 
-[data-theme="warhammer"] {
+[data-theme='warhammer'] {
   --bg: #100e0c;
   --surface: #1a1714;
   --surface-2: #241f1a;
@@ -80,8 +80,8 @@
    Active when html[data-mode="light"], OR when no mode is set AND the user
    prefers light. Each theme keeps its accent identity but flips the surfaces. */
 @media (prefers-color-scheme: light) {
-  :root:not([data-mode="dark"]),
-  [data-theme="fantasy"]:not([data-mode="dark"]) {
+  :root:not([data-mode='dark']),
+  [data-theme='fantasy']:not([data-mode='dark']) {
     --bg: #f6efe1;
     --surface: #fdf7e7;
     --surface-2: #ede1c5;
@@ -91,7 +91,7 @@
     --accent-2: #486a3e;
     --border: #d6c9a8;
   }
-  [data-theme="sci-fi"]:not([data-mode="dark"]) {
+  [data-theme='sci-fi']:not([data-mode='dark']) {
     --bg: #eaf2f7;
     --surface: #ffffff;
     --surface-2: #d8e6ee;
@@ -101,7 +101,7 @@
     --accent-2: #2f8a55;
     --border: #b9cfdb;
   }
-  [data-theme="cyberpunk"]:not([data-mode="dark"]) {
+  [data-theme='cyberpunk']:not([data-mode='dark']) {
     --bg: #faeef5;
     --surface: #ffffff;
     --surface-2: #f0d9e8;
@@ -111,7 +111,7 @@
     --accent-2: #0a8aa0;
     --border: #d8b3cc;
   }
-  [data-theme="fallout"]:not([data-mode="dark"]) {
+  [data-theme='fallout']:not([data-mode='dark']) {
     --bg: #eef1e0;
     --surface: #f8faea;
     --surface-2: #dde5be;
@@ -121,7 +121,7 @@
     --accent-2: #8a5d10;
     --border: #c4d09a;
   }
-  [data-theme="warhammer"]:not([data-mode="dark"]) {
+  [data-theme='warhammer']:not([data-mode='dark']) {
     --bg: #f1ece1;
     --surface: #fbf6ea;
     --surface-2: #e6dec8;
@@ -134,8 +134,8 @@
 }
 
 /* Explicit override: html[data-mode="light"] wins regardless of system pref. */
-[data-mode="light"],
-[data-theme="fantasy"][data-mode="light"] {
+[data-mode='light'],
+[data-theme='fantasy'][data-mode='light'] {
   --bg: #f6efe1;
   --surface: #fdf7e7;
   --surface-2: #ede1c5;
@@ -145,7 +145,7 @@
   --accent-2: #486a3e;
   --border: #d6c9a8;
 }
-[data-theme="sci-fi"][data-mode="light"] {
+[data-theme='sci-fi'][data-mode='light'] {
   --bg: #eaf2f7;
   --surface: #ffffff;
   --surface-2: #d8e6ee;
@@ -155,7 +155,7 @@
   --accent-2: #2f8a55;
   --border: #b9cfdb;
 }
-[data-theme="cyberpunk"][data-mode="light"] {
+[data-theme='cyberpunk'][data-mode='light'] {
   --bg: #faeef5;
   --surface: #ffffff;
   --surface-2: #f0d9e8;
@@ -165,7 +165,7 @@
   --accent-2: #0a8aa0;
   --border: #d8b3cc;
 }
-[data-theme="fallout"][data-mode="light"] {
+[data-theme='fallout'][data-mode='light'] {
   --bg: #eef1e0;
   --surface: #f8faea;
   --surface-2: #dde5be;
@@ -175,7 +175,7 @@
   --accent-2: #8a5d10;
   --border: #c4d09a;
 }
-[data-theme="warhammer"][data-mode="light"] {
+[data-theme='warhammer'][data-mode='light'] {
   --bg: #f1ece1;
   --surface: #fbf6ea;
   --surface-2: #e6dec8;

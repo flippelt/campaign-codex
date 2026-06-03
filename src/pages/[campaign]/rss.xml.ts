@@ -1,6 +1,13 @@
 import type { APIRoute } from 'astro'
 import {
-  getCampaigns, getCampaign, getEntries, parseEntryId, TYPES, isTypeKey, entryHref, withBase
+  getCampaigns,
+  getCampaign,
+  getEntries,
+  parseEntryId,
+  TYPES,
+  isTypeKey,
+  entryHref,
+  withBase
 } from '../../lib/codex'
 
 export async function getStaticPaths() {
@@ -9,7 +16,10 @@ export async function getStaticPaths() {
 }
 
 const xmlEscape = (s: string) =>
-  s.replace(/[<>&'"]/g, (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' }[c]!))
+  s.replace(
+    /[<>&'"]/g,
+    (c) => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', "'": '&apos;', '"': '&quot;' })[c]!
+  )
 
 export const GET: APIRoute = async ({ params, site }) => {
   const id = params.campaign!
@@ -31,19 +41,22 @@ export const GET: APIRoute = async ({ params, site }) => {
   const campaignUrl = origin + withBase(`/${id}/`)
   const feedUrl = origin + withBase(`/${id}/rss.xml`)
 
-  const items = sorted.slice(0, 50).map((e) => {
-    const { type } = parseEntryId(e.id)
-    const meta = isTypeKey(type) ? TYPES[type] : undefined
-    const url = origin + withBase(entryHref(e))
-    const cat = meta?.label ?? type
-    return `    <item>
+  const items = sorted
+    .slice(0, 50)
+    .map((e) => {
+      const { type } = parseEntryId(e.id)
+      const meta = isTypeKey(type) ? TYPES[type] : undefined
+      const url = origin + withBase(entryHref(e))
+      const cat = meta?.label ?? type
+      return `    <item>
       <title>${xmlEscape(`${e.data.emoji ?? meta?.emoji ?? ''} ${e.data.title}`.trim())}</title>
       <link>${xmlEscape(url)}</link>
       <guid isPermaLink="true">${xmlEscape(url)}</guid>
       <category>${xmlEscape(cat)}</category>
       ${e.data.summary ? `<description>${xmlEscape(e.data.summary)}</description>` : ''}
     </item>`
-  }).join('\n')
+    })
+    .join('\n')
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0">

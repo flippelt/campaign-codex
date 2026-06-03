@@ -2,7 +2,12 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 import EntryCard from '../../../components/EntryCard.astro'
 import {
-  getCampaigns, getCampaign, getTags, getEntriesByTag, typeCounts, withBase
+  getCampaigns,
+  getCampaign,
+  getTags,
+  getEntriesByTag,
+  typeCounts,
+  withBase
 } from '../../../lib/codex'
 
 export async function getStaticPaths() {
@@ -19,7 +24,9 @@ export async function getStaticPaths() {
   return paths
 }
 
-interface Props { tagLabel: string }
+interface Props {
+  tagLabel: string
+}
 const { tagLabel } = Astro.props
 const { campaign: id, tag: slug } = Astro.params
 const campaign = await getCampaign(id!)
@@ -35,12 +42,17 @@ const entries = await getEntriesByTag(id!, slug!)
   theme={campaign.data.theme}
   campaigns={campaigns}
   current={id}
-  sidebar={{ campaignId: id!, campaignName: campaign.data.name, emoji: campaign.data.emoji, counts, active: '' }}
+  sidebar={{
+    campaignId: id!,
+    campaignName: campaign.data.name,
+    emoji: campaign.data.emoji,
+    counts,
+    active: ''
+  }}
 >
   <p class="breadcrumb">
     <a href={withBase(`/${id}/`)}>{campaign.data.emoji} {campaign.data.name}</a> ›
-    <a href={withBase(`/${id}/tags/`)}>Tags</a> ›
-    #{tagLabel}
+    <a href={withBase(`/${id}/tags/`)}>Tags</a> › #{tagLabel}
   </p>
   <div class="page-head">
     <h1>🏷️ #{tagLabel}</h1>

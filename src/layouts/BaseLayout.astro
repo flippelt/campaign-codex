@@ -1,5 +1,6 @@
 ---
 import '../styles/global.css'
+import { ClientRouter } from 'astro:transitions'
 import Nav from '../components/Nav.astro'
 import { withBase, type Campaign } from '../lib/codex'
 
@@ -18,30 +19,61 @@ interface Props {
   campaigns: Campaign[]
   current?: string
   sidebar?: SidebarData
+  ogImage?: string
+  ogType?: 'website' | 'article'
 }
 
-const { title, description, theme = 'fantasy', campaigns, current, sidebar } =
-  Astro.props
+const {
+  title,
+  description,
+  theme = 'fantasy',
+  campaigns,
+  current,
+  sidebar,
+  ogImage,
+  ogType = 'website'
+} = Astro.props
 const hasSidebar = !!sidebar
 const currentCampaign = campaigns.find((c) => c.id === current)
+const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href
+const ogImageUrl = ogImage ? new URL(withBase(ogImage), Astro.site ?? Astro.url).href : undefined
 ---
 
 <!doctype html>
-<html lang="pt-br" data-theme={theme}>
+<html lang="pt-br" data-theme={theme} data-base-url={import.meta.env.BASE_URL}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    <link rel="canonical" href={canonical} />
     <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
-    {current && (
-      <link
-        rel="alternate"
-        type="application/rss+xml"
-        title={`${currentCampaign?.data.name ?? 'Campanha'} · RSS`}
-        href={withBase(`/${current}/rss.xml`)}
-      />
-    )}
+
+    {/* Open Graph */}
+    <meta property="og:title" content={title} />
+    {description && <meta property="og:description" content={description} />}
+    <meta property="og:type" content={ogType} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:site_name" content="Campaign Codex" />
+    <meta property="og:locale" content="pt_BR" />
+    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+
+    {/* Twitter Card */}
+    <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:title" content={title} />
+    {description && <meta name="twitter:description" content={description} />}
+    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+    {
+      current && (
+        <link
+          rel="alternate"
+          type="application/rss+xml"
+          title={`${currentCampaign?.data.name ?? 'Campanha'} · RSS`}
+          href={withBase(`/${current}/rss.xml`)}
+        />
+      )
+    }
+    <ClientRouter />
     <script is:inline>
       // Apply saved color-mode before paint, so there's no flash.
       try {
@@ -56,16 +88,22 @@ const currentCampaign = campaigns.find((c) => c.id === current)
     <a class="skip-link" href="#main">Pular para o conteúdo</a>
     <div class={`shell${hasSidebar ? '' : ' shell--nosidebar'}`} id="shell">
       <header class="topbar">
-        {hasSidebar && (
-          <button
-            class="hamburger"
-            id="navToggle"
-            aria-label="Abrir menu"
-            aria-controls="sidebar"
-            aria-expanded="false"
-          >☰</button>
-        )}
-        <a class="topbar__brand" href={withBase('/')}>📚 <span class="topbar__brand-text">Campaign Codex</span></a>
+        {
+          hasSidebar && (
+            <button
+              class="hamburger"
+              id="navToggle"
+              aria-label="Abrir menu"
+              aria-controls="sidebar"
+              aria-expanded="false"
+            >
+              ☰
+            </button>
+          )
+        }
+        <a class="topbar__brand" href={withBase('/')}
+          >📚 <span class="topbar__brand-text">Campaign Codex</span></a
+        >
         <span class="topbar__spacer"></span>
         <button
           class="mode-toggle"
@@ -78,141 +116,188 @@ const currentCampaign = campaigns.find((c) => c.id === current)
           <span class="mode-toggle__icon" data-mode-light hidden>☀️</span>
           <span class="mode-toggle__icon" data-mode-dark hidden>🌙</span>
         </button>
-        {campaigns.length > 0 && (
-          <details class="campaign-switch" id="campaignSwitch">
-            <summary aria-label="Trocar de campanha">
-              <span class="campaign-switch__label">
-                {currentCampaign
-                  ? `${currentCampaign.data.emoji} ${currentCampaign.data.name}`
-                  : '📚 Campanhas'}
-              </span>
-              <span class="campaign-switch__caret" aria-hidden="true">▾</span>
-            </summary>
-            <nav class="campaign-menu">
-              {campaigns.map((c) => (
-                <a
-                  href={withBase(`/${c.id}/`)}
-                  aria-current={c.id === current ? 'page' : undefined}
-                >
-                  {c.data.emoji} {c.data.name}
-                </a>
-              ))}
-            </nav>
-          </details>
-        )}
+        {
+          campaigns.length > 0 && (
+            <details class="campaign-switch" id="campaignSwitch">
+              <summary aria-label="Trocar de campanha">
+                <span class="campaign-switch__label">
+                  {currentCampaign
+                    ? `${currentCampaign.data.emoji} ${currentCampaign.data.name}`
+                    : '📚 Campanhas'}
+                </span>
+                <span class="campaign-switch__caret" aria-hidden="true">
+                  ▾
+                </span>
+              </summary>
+              <nav class="campaign-menu">
+                {campaigns.map((c) => (
+                  <a
+                    href={withBase(`/${c.id}/`)}
+                    aria-current={c.id === current ? 'page' : undefined}
+                  >
+                    {c.data.emoji} {c.data.name}
+                  </a>
+                ))}
+              </nav>
+            </details>
+          )
+        }
       </header>
 
-      {hasSidebar && (
-        <>
-          <div class="scrim" id="navScrim"></div>
-          <aside class="sidebar" id="sidebar">
-            <Nav
-              campaignId={sidebar!.campaignId}
-              campaignName={sidebar!.campaignName}
-              emoji={sidebar!.emoji}
-              counts={sidebar!.counts}
-              active={sidebar!.active}
-            />
-          </aside>
-        </>
-      )}
+      {
+        hasSidebar && (
+          <>
+            <div class="scrim" id="navScrim" />
+            <aside class="sidebar" id="sidebar">
+              <Nav
+                campaignId={sidebar!.campaignId}
+                campaignName={sidebar!.campaignName}
+                emoji={sidebar!.emoji}
+                counts={sidebar!.counts}
+                active={sidebar!.active}
+              />
+            </aside>
+          </>
+        )
+      }
 
       <main class="main" id="main" tabindex="-1">
         <slot />
       </main>
 
       <footer class="foot">
-        Campaign Codex · wiki de campanhas de RPG · feito com Astro
+        Campaign Codex · wiki de campanhas de RPG · feito com Astro ·{' '}
+        <a href={withBase('/buscar/')}>buscar tudo</a>
       </footer>
     </div>
 
     <!-- Click-to-zoom lightbox for content images. -->
-    <div class="lightbox" id="lightbox" hidden role="dialog" aria-modal="true" aria-label="Imagem ampliada">
+    <div
+      class="lightbox"
+      id="lightbox"
+      hidden
+      role="dialog"
+      aria-modal="true"
+      aria-label="Imagem ampliada"
+    >
       <button class="lightbox__close" id="lightboxClose" aria-label="Fechar">✕</button>
       <img class="lightbox__img" id="lightboxImg" src="" alt="" />
     </div>
 
     <script>
-      // Mobile nav drawer (when a sidebar is present).
-      const shell = document.getElementById('shell')
-      const toggle = document.getElementById('navToggle')
-      const scrim = document.getElementById('navScrim')
-      const syncNavExpanded = () =>
-        toggle?.setAttribute('aria-expanded', String(!!shell?.classList.contains('nav-open')))
-      const closeNav = () => { shell?.classList.remove('nav-open'); syncNavExpanded() }
-      toggle?.addEventListener('click', () => {
-        shell?.classList.toggle('nav-open')
-        syncNavExpanded()
-      })
-      scrim?.addEventListener('click', closeNav)
+      // With <ClientRouter />, this module is evaluated once. DOM nodes get
+      // swapped on every navigation, so anything that grabs `getElementById`
+      // must run again — we re-run init() on `astro:page-load`.
 
-      // Color-mode toggle: auto → light → dark → auto.
-      const modeBtn = document.getElementById('modeToggle')
       const html = document.documentElement
-      const showIcon = (which: 'auto' | 'light' | 'dark') => {
-        modeBtn?.querySelectorAll<HTMLElement>('.mode-toggle__icon').forEach((el) => {
-          el.hidden = el.dataset.modeAuto !== undefined ? which !== 'auto'
-            : el.dataset.modeLight !== undefined ? which !== 'light'
-            : which !== 'dark'
-        })
-      }
+
       const readMode = (): 'auto' | 'light' | 'dark' => {
         const m = html.getAttribute('data-mode')
         return m === 'light' || m === 'dark' ? m : 'auto'
       }
-      showIcon(readMode())
-      modeBtn?.addEventListener('click', () => {
-        const next = ({ auto: 'light', light: 'dark', dark: 'auto' } as const)[readMode()]
-        if (next === 'auto') {
-          html.removeAttribute('data-mode')
-          try { localStorage.removeItem('cc-mode') } catch {}
-        } else {
-          html.setAttribute('data-mode', next)
-          try { localStorage.setItem('cc-mode', next) } catch {}
-        }
-        showIcon(next)
-      })
 
-      // Campaign dropdown (<details>): close on outside click or Escape.
-      const sw = document.getElementById('campaignSwitch')
+      function init() {
+        // ── Mobile drawer ────────────────────────────────────────────────
+        const shell = document.getElementById('shell')
+        const toggle = document.getElementById('navToggle')
+        const scrim = document.getElementById('navScrim')
+        const syncNavExpanded = () =>
+          toggle?.setAttribute('aria-expanded', String(!!shell?.classList.contains('nav-open')))
+        toggle?.addEventListener('click', () => {
+          shell?.classList.toggle('nav-open')
+          syncNavExpanded()
+        })
+        scrim?.addEventListener('click', () => {
+          shell?.classList.remove('nav-open')
+          syncNavExpanded()
+        })
+
+        // ── Color-mode toggle (auto → light → dark → auto) ──────────────
+        const modeBtn = document.getElementById('modeToggle')
+        const showIcon = (which: 'auto' | 'light' | 'dark') => {
+          modeBtn?.querySelectorAll<HTMLElement>('.mode-toggle__icon').forEach((el) => {
+            el.hidden =
+              el.dataset.modeAuto !== undefined
+                ? which !== 'auto'
+                : el.dataset.modeLight !== undefined
+                  ? which !== 'light'
+                  : which !== 'dark'
+          })
+        }
+        showIcon(readMode())
+        modeBtn?.addEventListener('click', () => {
+          const next = ({ auto: 'light', light: 'dark', dark: 'auto' } as const)[readMode()]
+          if (next === 'auto') {
+            html.removeAttribute('data-mode')
+            try {
+              localStorage.removeItem('cc-mode')
+            } catch {}
+          } else {
+            html.setAttribute('data-mode', next)
+            try {
+              localStorage.setItem('cc-mode', next)
+            } catch {}
+          }
+          showIcon(next)
+        })
+
+        // ── Image lightbox ──────────────────────────────────────────────
+        const lightbox = document.getElementById('lightbox') as HTMLElement | null
+        const lightboxImg = document.getElementById('lightboxImg') as HTMLImageElement | null
+        const lightboxClose = document.getElementById('lightboxClose')
+        const openLightbox = (img: HTMLImageElement) => {
+          if (!lightbox || !lightboxImg) return
+          lightboxImg.src = img.currentSrc || img.src
+          lightboxImg.alt = img.alt
+          lightbox.hidden = false
+          document.body.classList.add('lightbox-open')
+        }
+        const closeLightbox = () => {
+          if (!lightbox || !lightboxImg) return
+          lightbox.hidden = true
+          lightboxImg.src = ''
+          document.body.classList.remove('lightbox-open')
+        }
+        document.querySelectorAll<HTMLImageElement>('.aside__img, .prose img').forEach((img) => {
+          img.classList.add('zoomable')
+          img.addEventListener('click', () => openLightbox(img))
+        })
+        lightboxClose?.addEventListener('click', closeLightbox)
+        lightbox?.addEventListener('click', (e) => {
+          if (e.target === lightbox) closeLightbox()
+        })
+      }
+
+      // ── Document-level handlers (registered once) ───────────────────
+      // Outside-click for the campaign dropdown.
       document.addEventListener('click', (e) => {
+        const sw = document.getElementById('campaignSwitch') as HTMLDetailsElement | null
         if (sw && sw.open && !sw.contains(e.target as Node)) sw.open = false
       })
 
-      // Image lightbox: click any content image (entry aside or prose body)
-      // to view it full-screen. Close via the × button, backdrop, or Escape.
-      const lightbox = document.getElementById('lightbox') as HTMLElement | null
-      const lightboxImg = document.getElementById('lightboxImg') as HTMLImageElement | null
-      const lightboxClose = document.getElementById('lightboxClose')
-      const openLightbox = (img: HTMLImageElement) => {
-        if (!lightbox || !lightboxImg) return
-        lightboxImg.src = img.currentSrc || img.src
-        lightboxImg.alt = img.alt
-        lightbox.hidden = false
-        document.body.classList.add('lightbox-open')
-      }
-      const closeLightbox = () => {
-        if (!lightbox || !lightboxImg) return
-        lightbox.hidden = true
-        lightboxImg.src = ''
-        document.body.classList.remove('lightbox-open')
-      }
-      document.querySelectorAll<HTMLImageElement>('.aside__img, .prose img').forEach((img) => {
-        img.classList.add('zoomable')
-        img.addEventListener('click', () => openLightbox(img))
-      })
-      lightboxClose?.addEventListener('click', closeLightbox)
-      lightbox?.addEventListener('click', (e) => {
-        if (e.target === lightbox) closeLightbox()
-      })
-
+      const searchUrl =
+        (html.dataset.baseUrl !== undefined ? html.dataset.baseUrl : '/') + 'buscar/'
       document.addEventListener('keydown', (e) => {
         if (e.key === 'Escape') {
-          closeNav()
+          document.getElementById('shell')?.classList.remove('nav-open')
+          const sw = document.getElementById('campaignSwitch') as HTMLDetailsElement | null
           if (sw) sw.open = false
-          if (lightbox && !lightbox.hidden) closeLightbox()
+          const lb = document.getElementById('lightbox') as HTMLElement | null
+          if (lb && !lb.hidden) {
+            lb.hidden = true
+            document.body.classList.remove('lightbox-open')
+          }
+        }
+        if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+          const t = e.target as HTMLElement | null
+          if (t?.tagName === 'INPUT' && (t as HTMLInputElement).type === 'search') return
+          e.preventDefault()
+          window.location.href = searchUrl
         }
       })
+
+      init()
+      document.addEventListener('astro:page-load', init)
     </script>
   </body>
 </html>

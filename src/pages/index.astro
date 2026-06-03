@@ -14,32 +14,39 @@ const total = (id: string) =>
   <div class="page-head">
     <h1>📚 Campaign Codex</h1>
     <p>
-      Um wiki para suas campanhas de RPG — história, mapas, acontecimentos, NPCs e
-      personagens. Escolha uma campanha para começar.
+      Um wiki para suas campanhas de RPG — história, mapas, acontecimentos, NPCs e personagens.
+      Escolha uma campanha para começar.
     </p>
   </div>
 
-  {campaigns.length === 0 ? (
-    <p class="empty">Nenhuma campanha ainda. Crie <code>src/content/campaigns/&lt;id&gt;.md</code>.</p>
-  ) : (
-    <div class="grid">
-      {campaigns.map((c) => (
-        <a class="card" href={withBase(`/${c.id}/`)} data-theme={c.data.theme}>
-          <div class="card__cover-wrap">
-            <span class="card__cover-emoji" aria-hidden="true">{c.data.emoji}</span>
-          </div>
-          <div class="card__body">
-            <h3 class="card__title">{c.data.name}</h3>
-            {c.data.summary && <p class="card__summary">{c.data.summary}</p>}
-            <div class="chips card__chips">
-              <span class="chip chip--accent">
-                {THEME_LABELS[c.data.theme]?.emoji} {THEME_LABELS[c.data.theme]?.label ?? c.data.theme}
+  {
+    campaigns.length === 0 ? (
+      <p class="empty">
+        Nenhuma campanha ainda. Crie <code>src/content/campaigns/&lt;id&gt;.md</code>.
+      </p>
+    ) : (
+      <div class="grid">
+        {campaigns.map((c) => (
+          <a class="card" href={withBase(`/${c.id}/`)} data-theme={c.data.theme}>
+            <div class="card__cover-wrap">
+              <span class="card__cover-emoji" aria-hidden="true">
+                {c.data.emoji}
               </span>
-              <span class="chip">{total(c.id)} entradas</span>
             </div>
-          </div>
-        </a>
-      ))}
-    </div>
-  )}
+            <div class="card__body">
+              <h3 class="card__title">{c.data.name}</h3>
+              {c.data.summary && <p class="card__summary">{c.data.summary}</p>}
+              <div class="chips card__chips">
+                <span class="chip chip--accent">
+                  {THEME_LABELS[c.data.theme]?.emoji}{' '}
+                  {THEME_LABELS[c.data.theme]?.label ?? c.data.theme}
+                </span>
+                <span class="chip">{total(c.id)} entradas</span>
+              </div>
+            </div>
+          </a>
+        ))}
+      </div>
+    )
+  }
 </BaseLayout>

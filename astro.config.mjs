@@ -1,10 +1,176 @@
 // @ts-check
+import { readdir, readFile } from 'node:fs/promises'
+import path from 'node:path'
 import { defineConfig } from 'astro/config'
+import sitemap from '@astrojs/sitemap'
+
+// Build-time lint: warn about tags that appear on a single entry. These are
+// usually typos ("magos" vs "mago") that fragment the tag system. Walks the
+// raw frontmatter rather than the loaded collection so it runs without
+// initializing Astro internals.
+function tagLint() {
+  return {
+    name: 'campaign-codex:tag-lint',
+    hooks: {
+      'astro:build:start': async ({ logger }) => {
+        const root = path.resolve('./src/content/entries')
+        const tagMap = new Map()
+        const walk = async (dir) => {
+          let kids
+          try {
+            kids = await readdir(dir, { withFileTypes: true })
+          } catch {
+            return
+          }
+          for (const k of kids) {
+            const p = path.join(dir, k.name)
+            if (k.isDirectory()) await walk(p)
+            else if (k.name.endsWith('.md')) {
+              const src = (await readFile(p, 'utf8')).replace(/\r\n/g, '\n')
+              const m = src.match(/^---\n([\s\S]*?)\n---/)
+              if (!m) continue
+              const tagsLine = m[1].match(/^tags:\s*\[([^\]]*)\]/m)
+              if (!tagsLine) continue
+              const tags = tagsLine[1]
+                .split(',')
+                .map((s) => s.replace(/['"\s]/g, ''))
+                .filter(Boolean)
+              for (const t of tags) {
+                const arr = tagMap.get(t) ?? []
+                arr.push(path.relative(root, p))
+                tagMap.set(t, arr)
+              }
+            }
+          }
+        }
+        await walk(root)
+        const orphans = [...tagMap].filter(([, files]) => files.length === 1)
+        if (orphans.length) {
+          // Use console.warn so the message survives Astro's logger formatting
+          // and appears verbatim in CI logs / dev terminal.
+          console.warn(
+            `\n⚠️  [tag-lint] ${orphans.length} tag(s) aparecem em apenas 1 entrada (possível typo):`
+          )
+          for (const [t, files] of orphans) {
+            console.warn(`     #${t} — em ${files[0]}`)
+          }
+          logger.warn(`${orphans.length} tag(s) aparecem em apenas 1 entrada — veja stderr`)
+        }
+      }
+    }
+  }
+}
 
 // Static site. For GitHub Pages (project repo) the build base is the repo
 // name; on a custom domain / Netlify it's served at the root. Override the
 // base at build time with `BASE` (e.g. BASE=/campaign-codex/).
 const base = process.env.BASE ?? '/'
+
+// Canonical site URL for sitemap and absolute OG/Twitter URLs. Override at
+// build time with SITE (e.g. SITE=https://contracodex.netlify.app).
+const site = process.env.SITE ?? 'https://contracodex.netlify.app'
+
+// Wiki-style [[links]] in markdown:
+//   [[mestre-corvo]]                  → link to first entry in current campaign whose slug is "mestre-corvo"
+//   [[Mestre Corvo]]                  → matches by case-insensitive title or slug
+//   [[npcs/mestre-corvo]]             → forces the type
+//   [[mestre-corvo|conselheiro]]      → custom display text
+// Unknown links become a styled "(?) link not found" span so the author can fix it.
+function remarkWikiLinks() {
+  return async (tree, file) => {
+    // Lazy-load the project's content to resolve targets. Read the raw
+    // entry filenames so this doesn't need Astro's content collection
+    // runtime at config-load time.
+    const { readdir } = await import('node:fs/promises')
+    const path = await import('node:path')
+    const root = path.resolve('./src/content/entries')
+
+    const filePath = String(file?.path ?? file?.history?.[0] ?? '').replace(/\\/g, '/')
+    const m = filePath.match(/\/content\/entries\/([^/]+)\//i)
+    if (!m) return
+    const myCampaign = m[1]
+
+    // Build a lookup: { "slug": "type", "type/slug": "type" } scoped to this campaign.
+    const index = new Map()
+    const walk = async (dir, type) => {
+      let kids
+      try {
+        kids = await readdir(dir, { withFileTypes: true })
+      } catch {
+        return
+      }
+      for (const k of kids) {
+        const p = path.join(dir, k.name)
+        if (k.isDirectory()) {
+          await walk(p, type ?? k.name)
+        } else if (k.isFile() && k.name.endsWith('.md')) {
+          const slug = k.name.replace(/\.md$/, '')
+          if (type) {
+            index.set(slug.toLowerCase(), { type, slug })
+            index.set(`${type}/${slug}`.toLowerCase(), { type, slug })
+          }
+        }
+      }
+    }
+    await walk(path.join(root, myCampaign))
+
+    const resolve = (target) => {
+      const key = target.toLowerCase().trim()
+      if (index.has(key)) return index.get(key)
+      // Try slugifying ("Mestre Corvo" → "mestre-corvo").
+      const slug = key
+        .normalize('NFD')
+        .replace(/\p{M}/gu, '')
+        .replace(/[^a-z0-9/]+/g, '-')
+        .replace(/^-|-$/g, '')
+      if (index.has(slug)) return index.get(slug)
+      return null
+    }
+
+    const walkTree = (node) => {
+      if (!node?.children) return
+      for (let i = 0; i < node.children.length; i++) {
+        const child = node.children[i]
+        if (child.type === 'text' && child.value.includes('[[')) {
+          const parts = []
+          let lastIdx = 0
+          const re = /\[\[([^\]|]+)(?:\|([^\]]+))?\]\]/g
+          let mm
+          while ((mm = re.exec(child.value))) {
+            if (mm.index > lastIdx) {
+              parts.push({ type: 'text', value: child.value.slice(lastIdx, mm.index) })
+            }
+            const target = mm[1].trim()
+            const label = (mm[2] ?? target).trim()
+            const hit = resolve(target)
+            if (hit) {
+              parts.push({
+                type: 'link',
+                url: `../${hit.type}/${hit.slug}/`,
+                children: [{ type: 'text', value: label }]
+              })
+            } else {
+              parts.push({
+                type: 'html',
+                value: `<span class="wikilink wikilink--missing" title="Entrada não encontrada: ${target}">${label} (?)</span>`
+              })
+            }
+            lastIdx = mm.index + mm[0].length
+          }
+          if (parts.length === 0) continue
+          if (lastIdx < child.value.length) {
+            parts.push({ type: 'text', value: child.value.slice(lastIdx) })
+          }
+          node.children.splice(i, 1, ...parts)
+          i += parts.length - 1
+        } else {
+          walkTree(child)
+        }
+      }
+    }
+    walkTree(tree)
+  }
+}
 
 // GFM-style callouts: a blockquote whose first paragraph starts with
 // `[!note]`, `[!warning]`, `[!lore]`, `[!spoiler]`, `[!tip]` becomes a
@@ -42,9 +208,7 @@ function remarkCallouts() {
               const titleNode = {
                 type: 'paragraph',
                 data: { hProperties: { className: ['callout__title'] } },
-                children: [
-                  { type: 'text', value: `${meta.emoji} ${titleText || meta.label}` }
-                ]
+                children: [{ type: 'text', value: `${meta.emoji} ${titleText || meta.label}` }]
               }
               if (p.children.length === 0) node.children.shift()
               node.children.unshift(titleNode)
@@ -95,7 +259,11 @@ function rehypeHeadingAnchors() {
           {
             type: 'element',
             tagName: 'a',
-            properties: { href: `#${id}`, class: 'heading-anchor', 'aria-label': 'Link permanente' },
+            properties: {
+              href: `#${id}`,
+              class: 'heading-anchor',
+              'aria-label': 'Link permanente'
+            },
             children: [{ type: 'text', value: '#' }]
           },
           ...(node.children || [])
@@ -120,9 +288,11 @@ function rehypeHeadingAnchors() {
 function rehypeContentLinks() {
   const basePrefix = base.replace(/\/$/, '')
   const isRelative = (v) =>
-    typeof v === 'string' && v.length > 0 &&
+    typeof v === 'string' &&
+    v.length > 0 &&
     !/^[a-z][a-z0-9+.-]*:/i.test(v) && // scheme: http:, mailto:, data:
-    !v.startsWith('/') && !v.startsWith('#')
+    !v.startsWith('/') &&
+    !v.startsWith('#')
 
   return (tree, file) => {
     const path = String(file?.path ?? file?.history?.[0] ?? '').replace(/\\/g, '/')
@@ -147,11 +317,13 @@ function rehypeContentLinks() {
 }
 
 export default defineConfig({
+  site,
   base,
   trailingSlash: 'always',
   build: { format: 'directory' },
+  integrations: [sitemap(), tagLint()],
   markdown: {
-    remarkPlugins: [remarkCallouts],
+    remarkPlugins: [remarkWikiLinks, remarkCallouts],
     rehypePlugins: [rehypeHeadingAnchors, rehypeContentLinks]
   }
 })

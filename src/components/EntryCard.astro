@@ -1,5 +1,13 @@
 ---
-import { entryHref, parseEntryId, TYPES, withBase, asset, isTypeKey, type Entry } from '../lib/codex'
+import {
+  entryHref,
+  parseEntryId,
+  TYPES,
+  withBase,
+  asset,
+  isTypeKey,
+  type Entry
+} from '../lib/codex'
 
 interface Props {
   entry: Entry
@@ -8,8 +16,12 @@ interface Props {
 const { entry } = Astro.props
 const { type } = parseEntryId(entry.id)
 const typeMeta = isTypeKey(type) ? TYPES[type] : undefined
-const { title, emoji, summary, image, status, faction, role, date, tags } = entry.data
-const haystack = [title, summary, status, faction, role, ...tags].filter(Boolean).join(' ').toLowerCase()
+const { title, emoji, summary, image, status, faction, role, date, tags, draft } = entry.data
+const isDraft = draft && import.meta.env.DEV
+const haystack = [title, summary, status, faction, role, ...tags]
+  .filter(Boolean)
+  .join(' ')
+  .toLowerCase()
 
 // Keep the cards short and predictable: pick the 2 most informative meta
 // chips, and surface the rest as a "+N" overflow so cards stay the same
@@ -24,26 +36,51 @@ const visibleMeta = allMeta.slice(0, 2)
 const overflowCount = allMeta.length - visibleMeta.length
 ---
 
-<a class={`card${image ? ' card--has-cover' : ''}`} href={withBase(entryHref(entry))} data-search={haystack}>
+<a
+  class={`card${image ? ' card--has-cover' : ''}${isDraft ? ' card--draft' : ''}`}
+  href={withBase(entryHref(entry))}
+  data-search={haystack}
+>
   <div class="card__cover-wrap">
-    {image
-      ? <img class="card__cover" src={asset(image)} alt="" loading="lazy" />
-      : <span class="card__cover-emoji" aria-hidden="true">{emoji ?? typeMeta?.emoji ?? '📄'}</span>
+    {
+      image ? (
+        <img class="card__cover" src={asset(image)} alt="" loading="lazy" />
+      ) : (
+        <span class="card__cover-emoji" aria-hidden="true">
+          {emoji ?? typeMeta?.emoji ?? '📄'}
+        </span>
+      )
     }
-    {typeMeta && (
-      <span class="card__type">{typeMeta.emoji} {typeMeta.singular}</span>
-    )}
+    {
+      typeMeta && (
+        <span class="card__type">
+          {typeMeta.emoji} {typeMeta.singular}
+        </span>
+      )
+    }
+    {
+      isDraft && (
+        <span class="card__draft" title="Rascunho — só visível em desenvolvimento">
+          DRAFT
+        </span>
+      )
+    }
   </div>
   <div class="card__body">
     <h3 class="card__title">{image && (emoji ?? typeMeta?.emoji)} {title}</h3>
     {summary && <p class="card__summary">{summary}</p>}
-    {(visibleMeta.length > 0 || overflowCount > 0) && (
-      <div class="chips card__chips">
-        {visibleMeta.map((m) => (
-          <span class="chip">{m.emoji ? `${m.emoji} ` : ''}{m.label}</span>
-        ))}
-        {overflowCount > 0 && <span class="chip chip--muted">+{overflowCount}</span>}
-      </div>
-    )}
+    {
+      (visibleMeta.length > 0 || overflowCount > 0) && (
+        <div class="chips card__chips">
+          {visibleMeta.map((m) => (
+            <span class="chip">
+              {m.emoji ? `${m.emoji} ` : ''}
+              {m.label}
+            </span>
+          ))}
+          {overflowCount > 0 && <span class="chip chip--muted">+{overflowCount}</span>}
+        </div>
+      )
+    }
   </div>
 </a>

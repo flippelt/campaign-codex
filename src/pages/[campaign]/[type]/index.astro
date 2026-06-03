@@ -2,8 +2,14 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 import EntryCard from '../../../components/EntryCard.astro'
 import {
-  getCampaigns, getCampaign, getEntries, typeCounts,
-  TYPE_KEYS, TYPES, withBase, type TypeKey
+  getCampaigns,
+  getCampaign,
+  getEntries,
+  typeCounts,
+  TYPE_KEYS,
+  TYPES,
+  withBase,
+  type TypeKey
 } from '../../../lib/codex'
 
 export async function getStaticPaths() {
@@ -27,7 +33,13 @@ const entries = await getEntries(id!, typeKey)
   theme={campaign.data.theme}
   campaigns={campaigns}
   current={id}
-  sidebar={{ campaignId: id!, campaignName: campaign.data.name, emoji: campaign.data.emoji, counts, active: typeKey }}
+  sidebar={{
+    campaignId: id!,
+    campaignName: campaign.data.name,
+    emoji: campaign.data.emoji,
+    counts,
+    active: typeKey
+  }}
 >
   <p class="breadcrumb">
     <a href={withBase(`/${id}/`)}>{campaign.data.emoji} {campaign.data.name}</a> ›
@@ -38,26 +50,35 @@ const entries = await getEntries(id!, typeKey)
     <p>{entries.length} {entries.length === 1 ? 'entrada' : 'entradas'}</p>
   </div>
 
-  {entries.length === 0 ? (
-    <p class="empty">
-      Nada aqui ainda. Crie <code>src/content/entries/{id}/{typeKey}/&lt;slug&gt;.md</code>.
-    </p>
-  ) : (
-    <>
-      <input
-        class="filter"
-        type="search"
-        id="filter"
-        placeholder={`🔎 filtrar ${meta.label.toLowerCase()}…`}
-        aria-label="Filtrar"
-      />
-      <div class="grid" id="entryGrid">
-        {entries.map((entry) => <EntryCard entry={entry} />)}
-      </div>
-      <p class="empty is-hidden" id="noMatch">Nenhuma entrada corresponde ao filtro.</p>
+  {
+    entries.length === 0 ? (
+      <p class="empty">
+        Nada aqui ainda. Crie{' '}
+        <code>
+          src/content/entries/{id}/{typeKey}/&lt;slug&gt;.md
+        </code>
+        .
+      </p>
+    ) : (
+      <>
+        <input
+          class="filter"
+          type="search"
+          id="filter"
+          placeholder={`🔎 filtrar ${meta.label.toLowerCase()}…`}
+          aria-label="Filtrar"
+        />
+        <div class={typeKey === 'maps' ? 'grid grid--gallery' : 'grid'} id="entryGrid">
+          {entries.map((entry) => (
+            <EntryCard entry={entry} />
+          ))}
+        </div>
+        <p class="empty is-hidden" id="noMatch">
+          Nenhuma entrada corresponde ao filtro.
+        </p>
 
-      <script is:inline>
-        {`
+        <script is:inline>
+          {`
         const input = document.getElementById('filter')
         const cards = Array.from(document.querySelectorAll('#entryGrid .card'))
         const noMatch = document.getElementById('noMatch')
@@ -93,7 +114,8 @@ const entries = await getEntries(id!, typeKey)
           noMatch.classList.toggle('is-hidden', shown !== 0)
         })
         `}
-      </script>
-    </>
-  )}
+        </script>
+      </>
+    )
+  }
 </BaseLayout>

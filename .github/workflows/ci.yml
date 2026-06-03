@@ -15,4 +15,18 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build
+      - name: Check formatting
+        run: npm run format:check
+      - name: Build (main)
+        run: npm run build
+      - name: Build (demo)
+        run: npm run build:demo
+      - name: Smoke — assert key files generated
+        run: |
+          test -f dist/index.html || (echo "missing dist/index.html"; exit 1)
+          test -f dist/sitemap-index.xml || (echo "missing sitemap"; exit 1)
+          # At least one campaign should have its search index and RSS feed.
+          ls dist/*/search.json >/dev/null 2>&1 || (echo "no per-campaign search.json"; exit 1)
+          ls dist/*/rss.xml >/dev/null 2>&1 || (echo "no per-campaign rss.xml"; exit 1)
+          test -f dist/search.json || (echo "missing global search.json"; exit 1)
+          test -f dist/buscar/index.html || (echo "missing global /buscar/"; exit 1)

@@ -3,8 +3,15 @@ import { render } from 'astro:content'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import EntryCard from '../../components/EntryCard.astro'
 import {
-  getCampaigns, getCampaign, getEntries, typeCounts,
-  TYPE_KEYS, TYPES, THEME_LABELS, withBase, asset
+  getCampaigns,
+  getCampaign,
+  getEntries,
+  typeCounts,
+  TYPE_KEYS,
+  TYPES,
+  THEME_LABELS,
+  withBase,
+  asset
 } from '../../lib/codex'
 
 export async function getStaticPaths() {
@@ -33,12 +40,21 @@ const theme = THEME_LABELS[campaign.data.theme]
   theme={campaign.data.theme}
   campaigns={campaigns}
   current={id}
-  sidebar={{ campaignId: id!, campaignName: campaign.data.name, emoji: campaign.data.emoji, counts, active: 'home' }}
+  ogImage={campaign.data.cover}
+  sidebar={{
+    campaignId: id!,
+    campaignName: campaign.data.name,
+    emoji: campaign.data.emoji,
+    counts,
+    active: 'home'
+  }}
 >
   <section class={`hero${campaign.data.cover ? ' hero--has-cover' : ''}`}>
-    {campaign.data.cover && (
-      <img class="hero__cover" src={asset(campaign.data.cover)} alt="" loading="eager" />
-    )}
+    {
+      campaign.data.cover && (
+        <img class="hero__cover" src={asset(campaign.data.cover)} alt="" loading="eager" />
+      )
+    }
     <div class="hero__overlay"></div>
     <div class="hero__body">
       <span class="hero__emoji" aria-hidden="true">{campaign.data.emoji}</span>
@@ -52,19 +68,23 @@ const theme = THEME_LABELS[campaign.data.theme]
 
   <div class="prose"><Content /></div>
 
-  {sections.map(({ key, entries }) =>
-    entries.length > 0 ? (
-      <section style="margin-top:34px">
-        <h2 style="display:flex;align-items:center;gap:10px">
-          <span>{TYPES[key].emoji}</span> {TYPES[key].label}
-          <a style="margin-left:auto;font-size:0.85rem" href={withBase(`/${id}/${key}/`)}>
-            ver todos ({counts[key]}) →
-          </a>
-        </h2>
-        <div class="grid">
-          {entries.map((entry) => <EntryCard entry={entry} />)}
-        </div>
-      </section>
-    ) : null
-  )}
+  {
+    sections.map(({ key, entries }) =>
+      entries.length > 0 ? (
+        <section style="margin-top:34px">
+          <h2 style="display:flex;align-items:center;gap:10px">
+            <span>{TYPES[key].emoji}</span> {TYPES[key].label}
+            <a style="margin-left:auto;font-size:0.85rem" href={withBase(`/${id}/${key}/`)}>
+              ver todos ({counts[key]}) →
+            </a>
+          </h2>
+          <div class="grid">
+            {entries.map((entry) => (
+              <EntryCard entry={entry} />
+            ))}
+          </div>
+        </section>
+      ) : null
+    )
+  }
 </BaseLayout>

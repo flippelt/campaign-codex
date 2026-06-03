@@ -1,40 +1,18 @@
 ---
-import BaseLayout from '../../../layouts/BaseLayout.astro'
-import { getCampaigns, getCampaign, typeCounts, withBase } from '../../../lib/codex'
-
-export async function getStaticPaths() {
-  const campaigns = await getCampaigns()
-  return campaigns.map((c) => ({ params: { campaign: c.id } }))
-}
-
-const { campaign: id } = Astro.params
-const campaign = await getCampaign(id!)
-if (!campaign) return Astro.redirect(withBase('/'))
+import BaseLayout from '../../layouts/BaseLayout.astro'
+import { getCampaigns, withBase } from '../../lib/codex'
 
 const campaigns = await getCampaigns()
-const counts = await typeCounts(id!)
-const indexUrl = withBase(`/${id}/search.json`)
+const indexUrl = withBase('/search.json')
 ---
 
-<BaseLayout
-  title={`Buscar · ${campaign.data.name}`}
-  theme={campaign.data.theme}
-  campaigns={campaigns}
-  current={id}
-  sidebar={{
-    campaignId: id!,
-    campaignName: campaign.data.name,
-    emoji: campaign.data.emoji,
-    counts,
-    active: 'search'
-  }}
->
-  <p class="breadcrumb">
-    <a href={withBase(`/${id}/`)}>{campaign.data.emoji} {campaign.data.name}</a> › Buscar
-  </p>
+<BaseLayout title="Buscar · Campaign Codex" campaigns={campaigns}>
   <div class="page-head">
-    <h1>🔎 Buscar em {campaign.data.name}</h1>
-    <p>Pesquise por título, resumo, tags ou texto da entrada.</p>
+    <h1>🔎 Buscar em todas as campanhas</h1>
+    <p>
+      Pesquise em todas as suas campanhas. <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>K</kbd> abre esta página
+      de qualquer lugar.
+    </p>
   </div>
 
   <input
@@ -60,24 +38,19 @@ const indexUrl = withBase(`/${id}/search.json`)
         /[&<>"']/g,
         (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c]
       )
-
     const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
-
     const highlight = (text, q) => {
       const safe = escapeHtml(text)
       if (!q) return safe
       return safe.replace(new RegExp(escapeRe(q), 'gi'), '<mark>$&</mark>')
     }
-
     const snippet = (body, q) => {
       if (!body) return ''
       const i = body.toLowerCase().indexOf(q.toLowerCase())
       if (i < 0) return ''
       const start = Math.max(0, i - 60)
       const end = Math.min(body.length, i + q.length + 100)
-      const pre = start > 0 ? '…' : ''
-      const post = end < body.length ? '…' : ''
-      return pre + body.slice(start, end) + post
+      return (start > 0 ? '…' : '') + body.slice(start, end) + (end < body.length ? '…' : '')
     }
 
     const load = () =>
@@ -99,7 +72,6 @@ const indexUrl = withBase(`/${id}/search.json`)
           const inTags = it.tags.some((t) => t.toLowerCase().includes(ql))
           const inBody = it.body.toLowerCase().includes(ql)
           if (!inTitle && !inSummary && !inTags && !inBody) return null
-          // crude score: title > tags > summary > body
           const score =
             (inTitle ? 8 : 0) + (inTags ? 4 : 0) + (inSummary ? 2 : 0) + (inBody ? 1 : 0)
           return { it, score, snip: !inTitle && !inSummary ? snippet(it.body, q) : '' }
@@ -121,17 +93,12 @@ const indexUrl = withBase(`/${id}/search.json`)
             <div class="search-hit__head">
               <span class="search-hit__emoji">${escapeHtml(it.emoji)}</span>
               <span class="search-hit__title">${highlight(it.title, q)}</span>
-              <span class="chip chip--accent">${escapeHtml(it.typeEmoji)} ${escapeHtml(it.typeLabel)}</span>
+              <span class="chip chip--accent">${escapeHtml(it.campaignEmoji)} ${escapeHtml(it.campaignName)}</span>
+              <span class="chip">${escapeHtml(it.typeEmoji)} ${escapeHtml(it.typeLabel)}</span>
             </div>
             ${it.summary ? `<p class="search-hit__summary">${highlight(it.summary, q)}</p>` : ''}
             ${snip ? `<p class="search-hit__snippet">${highlight(snip, q)}</p>` : ''}
-            ${
-              it.tags.length
-                ? `<div class="search-hit__tags">${it.tags
-                    .map((t) => `<span class="chip">#${highlight(t, q)}</span>`)
-                    .join('')}</div>`
-                : ''
-            }
+            ${it.tags.length ? `<div class="search-hit__tags">${it.tags.map((t) => `<span class="chip">#${highlight(t, q)}</span>`).join('')}</div>` : ''}
           </a>
         </li>
       `

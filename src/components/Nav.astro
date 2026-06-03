@@ -55,4 +55,12 @@ const { campaignId, campaignName, emoji, counts, active } = Astro.props
     <span class="navlink__emoji">🏷️</span>
     <span>Tags</span>
   </a>
+  <a
+    class="navlink"
+    href={withBase(`/${campaignId}/linha-do-tempo/`)}
+    aria-current={active === 'timeline' ? 'page' : undefined}
+  >
+    <span class="navlink__emoji">🕑</span>
+    <span>Linha do Tempo</span>
+  </a>
 </nav>

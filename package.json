@@ -8,9 +8,16 @@
     "build": "astro build",
     "build:demo": "astro build --mode demo --outDir dist-demo",
     "preview": "astro preview",
-    "astro": "astro"
+    "astro": "astro",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
   },
   "dependencies": {
     "astro": "^5.2.0"
+  },
+  "devDependencies": {
+    "@astrojs/sitemap": "^3.7.3",
+    "prettier": "^3.8.3",
+    "prettier-plugin-astro": "^0.14.1"
   }
 }

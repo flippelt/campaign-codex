@@ -1,6 +1,12 @@
 import type { APIRoute } from 'astro'
 import {
-  getCampaigns, getEntries, parseEntryId, TYPES, isTypeKey, entryHref, withBase
+  getCampaigns,
+  getEntries,
+  parseEntryId,
+  TYPES,
+  isTypeKey,
+  entryHref,
+  withBase
 } from '../../lib/codex'
 
 export async function getStaticPaths() {

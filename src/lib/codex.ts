@@ -86,9 +86,7 @@ export async function getEntries(campaign: string, type?: string): Promise<Entry
       const p = parseEntryId(e.id)
       return p.campaign === campaign && (!type || p.type === type)
     })
-    .sort(
-      (a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title)
-    )
+    .sort((a, b) => a.data.order - b.data.order || a.data.title.localeCompare(b.data.title))
 }
 
 // URL-safe slug for a tag (preserves diacritics-stripped lowercase form).
@@ -103,7 +101,9 @@ export function tagSlug(tag: string): string {
 }
 
 // All unique tags for a campaign, with counts and slugs, sorted by count desc.
-export async function getTags(campaign: string): Promise<{ tag: string; slug: string; count: number }[]> {
+export async function getTags(
+  campaign: string
+): Promise<{ tag: string; slug: string; count: number }[]> {
   const entries = await getEntries(campaign)
   const map = new Map<string, { tag: string; count: number }>()
   for (const e of entries) {
@@ -115,13 +115,52 @@ export async function getTags(campaign: string): Promise<{ tag: string; slug: st
       else map.set(slug, { tag: t, count: 1 })
     }
   }
-  return Array.from(map, ([slug, v]) => ({ slug, ...v }))
-    .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag))
+  return Array.from(map, ([slug, v]) => ({ slug, ...v })).sort(
+    (a, b) => b.count - a.count || a.tag.localeCompare(b.tag)
+  )
 }
 
 // Entries in a campaign whose tags include the given slug.
 export async function getEntriesByTag(campaign: string, slug: string): Promise<Entry[]> {
   return (await getEntries(campaign)).filter((e) => e.data.tags.some((t) => tagSlug(t) === slug))
+}
+
+// Find entries whose body links to `target`. Matches both relative forms an
+// author would write (e.g. `(atisok/)` or `(../lore/x/)`) and the absolute
+// `/<campaign>/<type>/<slug>/` form. Same-entry self-links are excluded.
+export async function getBacklinks(target: Entry): Promise<Entry[]> {
+  const { campaign, type, slug } = parseEntryId(target.id)
+  const candidates = await getEntries(campaign)
+  const abs = `/${campaign}/${type}/${slug}/`
+  const slugTail = `${slug}/`
+  const relFromType = `../${type}/${slug}/`
+  const hits: Entry[] = []
+  for (const e of candidates) {
+    if (e.id === target.id) continue
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const body: string = (e as any).body ?? ''
+    if (!body) continue
+    // Cheap textual probe: only inspect markdown link bodies `(...)`.
+    const re = /\]\(([^)]+)\)/g
+    let m: RegExpExecArray | null
+    let matched = false
+    while ((m = re.exec(body))) {
+      const href = m[1].split(/\s/)[0] // drop optional "title"
+      if (
+        href === abs ||
+        href === abs.replace(/\/$/, '') ||
+        href === relFromType ||
+        href === slugTail ||
+        href.endsWith(abs) ||
+        href.endsWith(relFromType)
+      ) {
+        matched = true
+        break
+      }
+    }
+    if (matched) hits.push(e)
+  }
+  return hits.sort((a, b) => a.data.title.localeCompare(b.data.title))
 }
 
 // Count entries per type for a campaign (for the nav + campaign home).
