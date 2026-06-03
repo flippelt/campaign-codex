@@ -1,0 +1,53 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import EntryCard from '../../../components/EntryCard.astro'
+import {
+  getCampaigns, getCampaign, getTags, getEntriesByTag, typeCounts, withBase
+} from '../../../lib/codex'
+
+export async function getStaticPaths() {
+  const campaigns = await getCampaigns()
+  const paths = []
+  for (const c of campaigns) {
+    for (const t of await getTags(c.id)) {
+      paths.push({
+        params: { campaign: c.id, tag: t.slug },
+        props: { tagLabel: t.tag }
+      })
+    }
+  }
+  return paths
+}
+
+interface Props { tagLabel: string }
+const { tagLabel } = Astro.props
+const { campaign: id, tag: slug } = Astro.params
+const campaign = await getCampaign(id!)
+if (!campaign) return Astro.redirect(withBase('/'))
+
+const campaigns = await getCampaigns()
+const counts = await typeCounts(id!)
+const entries = await getEntriesByTag(id!, slug!)
+---
+
+<BaseLayout
+  title={`#${tagLabel} · ${campaign.data.name}`}
+  theme={campaign.data.theme}
+  campaigns={campaigns}
+  current={id}
+  sidebar={{ campaignId: id!, campaignName: campaign.data.name, emoji: campaign.data.emoji, counts, active: '' }}
+>
+  <p class="breadcrumb">
+    <a href={withBase(`/${id}/`)}>{campaign.data.emoji} {campaign.data.name}</a> ›
+    <a href={withBase(`/${id}/tags/`)}>Tags</a> ›
+    #{tagLabel}
+  </p>
+  <div class="page-head">
+    <h1>🏷️ #{tagLabel}</h1>
+    <p>{entries.length} {entries.length === 1 ? 'entrada' : 'entradas'}</p>
+  </div>
+
+  <div class="grid">
+    {entries.map((entry) => <EntryCard entry={entry} />)}
+  </div>
+</BaseLayout>

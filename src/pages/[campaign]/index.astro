@@ -4,7 +4,7 @@ import BaseLayout from '../../layouts/BaseLayout.astro'
 import EntryCard from '../../components/EntryCard.astro'
 import {
   getCampaigns, getCampaign, getEntries, typeCounts,
-  TYPE_KEYS, TYPES, THEME_LABELS, withBase
+  TYPE_KEYS, TYPES, THEME_LABELS, withBase, asset
 } from '../../lib/codex'
 
 export async function getStaticPaths() {
@@ -35,14 +35,20 @@ const theme = THEME_LABELS[campaign.data.theme]
   current={id}
   sidebar={{ campaignId: id!, campaignName: campaign.data.name, emoji: campaign.data.emoji, counts, active: 'home' }}
 >
-  <div class="page-head">
-    <h1>{campaign.data.emoji} {campaign.data.name}</h1>
-    <p>
-      <span class="chip chip--accent">{theme?.emoji} {theme?.label ?? campaign.data.theme}</span>
-    </p>
-  </div>
-
-  {campaign.data.summary && <p style="color:var(--muted);max-width:72ch">{campaign.data.summary}</p>}
+  <section class={`hero${campaign.data.cover ? ' hero--has-cover' : ''}`}>
+    {campaign.data.cover && (
+      <img class="hero__cover" src={asset(campaign.data.cover)} alt="" loading="eager" />
+    )}
+    <div class="hero__overlay"></div>
+    <div class="hero__body">
+      <span class="hero__emoji" aria-hidden="true">{campaign.data.emoji}</span>
+      <h1 class="hero__title">{campaign.data.name}</h1>
+      <div class="hero__chips">
+        <span class="chip chip--accent">{theme?.emoji} {theme?.label ?? campaign.data.theme}</span>
+      </div>
+      {campaign.data.summary && <p class="hero__summary">{campaign.data.summary}</p>}
+    </div>
+  </section>
 
   <div class="prose"><Content /></div>
 

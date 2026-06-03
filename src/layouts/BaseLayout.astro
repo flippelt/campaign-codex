@@ -34,15 +34,50 @@ const currentCampaign = campaigns.find((c) => c.id === current)
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
     <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    {current && (
+      <link
+        rel="alternate"
+        type="application/rss+xml"
+        title={`${currentCampaign?.data.name ?? 'Campanha'} · RSS`}
+        href={withBase(`/${current}/rss.xml`)}
+      />
+    )}
+    <script is:inline>
+      // Apply saved color-mode before paint, so there's no flash.
+      try {
+        const m = localStorage.getItem('cc-mode')
+        if (m === 'light' || m === 'dark') {
+          document.documentElement.setAttribute('data-mode', m)
+        }
+      } catch {}
+    </script>
   </head>
   <body>
+    <a class="skip-link" href="#main">Pular para o conteúdo</a>
     <div class={`shell${hasSidebar ? '' : ' shell--nosidebar'}`} id="shell">
       <header class="topbar">
         {hasSidebar && (
-          <button class="hamburger" id="navToggle" aria-label="Abrir menu">☰</button>
+          <button
+            class="hamburger"
+            id="navToggle"
+            aria-label="Abrir menu"
+            aria-controls="sidebar"
+            aria-expanded="false"
+          >☰</button>
         )}
-        <a class="topbar__brand" href={withBase('/')}>📚 <span>Campaign Codex</span></a>
+        <a class="topbar__brand" href={withBase('/')}>📚 <span class="topbar__brand-text">Campaign Codex</span></a>
         <span class="topbar__spacer"></span>
+        <button
+          class="mode-toggle"
+          id="modeToggle"
+          type="button"
+          aria-label="Alternar tema claro/escuro"
+          title="Alternar tema (auto/claro/escuro)"
+        >
+          <span class="mode-toggle__icon" data-mode-auto>🌓</span>
+          <span class="mode-toggle__icon" data-mode-light hidden>☀️</span>
+          <span class="mode-toggle__icon" data-mode-dark hidden>🌙</span>
+        </button>
         {campaigns.length > 0 && (
           <details class="campaign-switch" id="campaignSwitch">
             <summary aria-label="Trocar de campanha">
@@ -82,7 +117,7 @@ const currentCampaign = campaigns.find((c) => c.id === current)
         </>
       )}
 
-      <main class="main">
+      <main class="main" id="main" tabindex="-1">
         <slot />
       </main>
 
@@ -102,9 +137,41 @@ const currentCampaign = campaigns.find((c) => c.id === current)
       const shell = document.getElementById('shell')
       const toggle = document.getElementById('navToggle')
       const scrim = document.getElementById('navScrim')
-      const closeNav = () => shell?.classList.remove('nav-open')
-      toggle?.addEventListener('click', () => shell?.classList.toggle('nav-open'))
+      const syncNavExpanded = () =>
+        toggle?.setAttribute('aria-expanded', String(!!shell?.classList.contains('nav-open')))
+      const closeNav = () => { shell?.classList.remove('nav-open'); syncNavExpanded() }
+      toggle?.addEventListener('click', () => {
+        shell?.classList.toggle('nav-open')
+        syncNavExpanded()
+      })
       scrim?.addEventListener('click', closeNav)
+
+      // Color-mode toggle: auto → light → dark → auto.
+      const modeBtn = document.getElementById('modeToggle')
+      const html = document.documentElement
+      const showIcon = (which: 'auto' | 'light' | 'dark') => {
+        modeBtn?.querySelectorAll<HTMLElement>('.mode-toggle__icon').forEach((el) => {
+          el.hidden = el.dataset.modeAuto !== undefined ? which !== 'auto'
+            : el.dataset.modeLight !== undefined ? which !== 'light'
+            : which !== 'dark'
+        })
+      }
+      const readMode = (): 'auto' | 'light' | 'dark' => {
+        const m = html.getAttribute('data-mode')
+        return m === 'light' || m === 'dark' ? m : 'auto'
+      }
+      showIcon(readMode())
+      modeBtn?.addEventListener('click', () => {
+        const next = ({ auto: 'light', light: 'dark', dark: 'auto' } as const)[readMode()]
+        if (next === 'auto') {
+          html.removeAttribute('data-mode')
+          try { localStorage.removeItem('cc-mode') } catch {}
+        } else {
+          html.setAttribute('data-mode', next)
+          try { localStorage.setItem('cc-mode', next) } catch {}
+        }
+        showIcon(next)
+      })
 
       // Campaign dropdown (<details>): close on outside click or Escape.
       const sw = document.getElementById('campaignSwitch')

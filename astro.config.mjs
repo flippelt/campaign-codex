@@ -6,6 +6,107 @@ import { defineConfig } from 'astro/config'
 // base at build time with `BASE` (e.g. BASE=/campaign-codex/).
 const base = process.env.BASE ?? '/'
 
+// GFM-style callouts: a blockquote whose first paragraph starts with
+// `[!note]`, `[!warning]`, `[!lore]`, `[!spoiler]`, `[!tip]` becomes a
+// styled callout. An optional title follows on the same line; if absent,
+// a default per-kind title is used.
+function remarkCallouts() {
+  const KINDS = {
+    note: { label: 'Nota', emoji: '📝' },
+    tip: { label: 'Dica', emoji: '💡' },
+    warning: { label: 'Atenção', emoji: '⚠️' },
+    lore: { label: 'Lore', emoji: '📜' },
+    spoiler: { label: 'Spoiler', emoji: '🙈' }
+  }
+  return (tree) => {
+    const walk = (parent) => {
+      if (!parent?.children) return
+      for (const node of parent.children) {
+        if (node.type === 'blockquote' && node.children?.[0]?.type === 'paragraph') {
+          const p = node.children[0]
+          const first = p.children?.[0]
+          if (first?.type === 'text') {
+            const m = first.value.match(/^\[!(\w+)\]\s*(.*)$/)
+            if (m && KINDS[m[1].toLowerCase()]) {
+              const kind = m[1].toLowerCase()
+              const meta = KINDS[kind]
+              // Pull a title off the marker line; the rest of that text
+              // node (after possible \n) stays as body.
+              const newlineIdx = m[2].indexOf('\n')
+              const titleText = (newlineIdx >= 0 ? m[2].slice(0, newlineIdx) : m[2]).trim()
+              const remainder = newlineIdx >= 0 ? m[2].slice(newlineIdx + 1) : ''
+              if (remainder) first.value = remainder
+              else p.children.shift()
+              // Drop a leading <br> the original line break may leave behind.
+              if (p.children[0]?.type === 'break') p.children.shift()
+              const titleNode = {
+                type: 'paragraph',
+                data: { hProperties: { className: ['callout__title'] } },
+                children: [
+                  { type: 'text', value: `${meta.emoji} ${titleText || meta.label}` }
+                ]
+              }
+              if (p.children.length === 0) node.children.shift()
+              node.children.unshift(titleNode)
+              node.data = node.data || {}
+              node.data.hName = 'aside'
+              node.data.hProperties = { className: ['callout', `callout--${kind}`] }
+            }
+          }
+        }
+        walk(node)
+      }
+    }
+    walk(tree)
+  }
+}
+
+// Add an id to every h2/h3 (slugified from text) and prepend a clickable
+// anchor (#) that copies the section link. Astro's `render()` exposes the
+// resulting headings list (with these ids) so the entry page can build a TOC.
+function rehypeHeadingAnchors() {
+  const slugify = (s) =>
+    s
+      .normalize('NFD')
+      .replace(/\p{M}/gu, '')
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-|-$/g, '')
+
+  const textOf = (node) => {
+    if (node.type === 'text') return node.value
+    if (node.children) return node.children.map(textOf).join('')
+    return ''
+  }
+
+  return (tree) => {
+    const used = new Map()
+    const walk = (node) => {
+      if (node?.type === 'element' && /^h[2-4]$/.test(node.tagName)) {
+        const text = textOf(node).trim()
+        let slug = slugify(text)
+        if (!slug) slug = node.tagName
+        const n = used.get(slug) ?? 0
+        used.set(slug, n + 1)
+        const id = n === 0 ? slug : `${slug}-${n + 1}`
+        node.properties = { ...(node.properties || {}), id }
+        // Prepend a permalink anchor (kept small + decorative).
+        node.children = [
+          {
+            type: 'element',
+            tagName: 'a',
+            properties: { href: `#${id}`, class: 'heading-anchor', 'aria-label': 'Link permanente' },
+            children: [{ type: 'text', value: '#' }]
+          },
+          ...(node.children || [])
+        ]
+      }
+      node?.children?.forEach(walk)
+    }
+    walk(tree)
+  }
+}
+
 // Rewrite in-content links/images to absolute, base-prefixed URLs.
 //
 // Entry pages are served as directories (trailingSlash: 'always' +
@@ -50,6 +151,7 @@ export default defineConfig({
   trailingSlash: 'always',
   build: { format: 'directory' },
   markdown: {
-    rehypePlugins: [rehypeContentLinks]
+    remarkPlugins: [remarkCallouts],
+    rehypePlugins: [rehypeHeadingAnchors, rehypeContentLinks]
   }
 })

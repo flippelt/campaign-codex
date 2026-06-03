@@ -61,14 +61,35 @@ const entries = await getEntries(id!, typeKey)
         const input = document.getElementById('filter')
         const cards = Array.from(document.querySelectorAll('#entryGrid .card'))
         const noMatch = document.getElementById('noMatch')
+        const escRe = (s) => s.replace(/[.*+?^\${}()|[\\]\\\\]/g, '\\\\$&')
+        const escHtml = (s) => s.replace(/[&<>"']/g, (c) => ({ '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;' }[c]))
+        // Snapshot the original (untouched) text of each highlight target,
+        // so we can rebuild it cleanly on every keystroke without losing
+        // text across successive edits.
+        const targets = cards.flatMap((card) =>
+          Array.from(card.querySelectorAll('.card__title, .card__summary'))
+            .map((el) => ({ el, original: el.textContent || '' }))
+        )
+        const highlight = (q) => {
+          if (!q) {
+            for (const { el, original } of targets) el.textContent = original
+            return
+          }
+          const re = new RegExp(escRe(q), 'gi')
+          for (const { el, original } of targets) {
+            el.innerHTML = escHtml(original).replace(re, (m) => '<mark>' + m + '</mark>')
+          }
+        }
         input?.addEventListener('input', () => {
-          const q = input.value.trim().toLowerCase()
+          const q = input.value.trim()
+          const ql = q.toLowerCase()
           let shown = 0
           for (const card of cards) {
-            const hit = !q || (card.dataset.search || '').includes(q)
+            const hit = !ql || (card.dataset.search || '').includes(ql)
             card.classList.toggle('is-hidden', !hit)
             if (hit) shown++
           }
+          highlight(q)
           noMatch.classList.toggle('is-hidden', shown !== 0)
         })
         `}

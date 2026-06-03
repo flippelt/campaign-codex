@@ -37,4 +37,22 @@ const { campaignId, campaignName, emoji, counts, active } = Astro.props
       </a>
     ))
   }
+
+  <p class="sidebar__title" style="margin-top:18px">Explorar</p>
+  <a
+    class="navlink"
+    href={withBase(`/${campaignId}/buscar/`)}
+    aria-current={active === 'search' ? 'page' : undefined}
+  >
+    <span class="navlink__emoji">🔎</span>
+    <span>Buscar</span>
+  </a>
+  <a
+    class="navlink"
+    href={withBase(`/${campaignId}/tags/`)}
+    aria-current={active === 'tags' ? 'page' : undefined}
+  >
+    <span class="navlink__emoji">🏷️</span>
+    <span>Tags</span>
+  </a>
 </nav>

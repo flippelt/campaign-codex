@@ -75,3 +75,113 @@
   --font: var(--serif);
   --font-head: var(--serif);
 }
+
+/* === Light mode ===
+   Active when html[data-mode="light"], OR when no mode is set AND the user
+   prefers light. Each theme keeps its accent identity but flips the surfaces. */
+@media (prefers-color-scheme: light) {
+  :root:not([data-mode="dark"]),
+  [data-theme="fantasy"]:not([data-mode="dark"]) {
+    --bg: #f6efe1;
+    --surface: #fdf7e7;
+    --surface-2: #ede1c5;
+    --text: #2a1f12;
+    --muted: #6b5a3f;
+    --accent: #a87410;
+    --accent-2: #486a3e;
+    --border: #d6c9a8;
+  }
+  [data-theme="sci-fi"]:not([data-mode="dark"]) {
+    --bg: #eaf2f7;
+    --surface: #ffffff;
+    --surface-2: #d8e6ee;
+    --text: #0c1a23;
+    --muted: #4a6577;
+    --accent: #086b78;
+    --accent-2: #2f8a55;
+    --border: #b9cfdb;
+  }
+  [data-theme="cyberpunk"]:not([data-mode="dark"]) {
+    --bg: #faeef5;
+    --surface: #ffffff;
+    --surface-2: #f0d9e8;
+    --text: #2a0c1e;
+    --muted: #71496a;
+    --accent: #c81d6a;
+    --accent-2: #0a8aa0;
+    --border: #d8b3cc;
+  }
+  [data-theme="fallout"]:not([data-mode="dark"]) {
+    --bg: #eef1e0;
+    --surface: #f8faea;
+    --surface-2: #dde5be;
+    --text: #1d2410;
+    --muted: #5d6c3d;
+    --accent: #4a7a14;
+    --accent-2: #8a5d10;
+    --border: #c4d09a;
+  }
+  [data-theme="warhammer"]:not([data-mode="dark"]) {
+    --bg: #f1ece1;
+    --surface: #fbf6ea;
+    --surface-2: #e6dec8;
+    --text: #211a12;
+    --muted: #6a5a44;
+    --accent: #8a6a14;
+    --accent-2: #8a2820;
+    --border: #cdc0a3;
+  }
+}
+
+/* Explicit override: html[data-mode="light"] wins regardless of system pref. */
+[data-mode="light"],
+[data-theme="fantasy"][data-mode="light"] {
+  --bg: #f6efe1;
+  --surface: #fdf7e7;
+  --surface-2: #ede1c5;
+  --text: #2a1f12;
+  --muted: #6b5a3f;
+  --accent: #a87410;
+  --accent-2: #486a3e;
+  --border: #d6c9a8;
+}
+[data-theme="sci-fi"][data-mode="light"] {
+  --bg: #eaf2f7;
+  --surface: #ffffff;
+  --surface-2: #d8e6ee;
+  --text: #0c1a23;
+  --muted: #4a6577;
+  --accent: #086b78;
+  --accent-2: #2f8a55;
+  --border: #b9cfdb;
+}
+[data-theme="cyberpunk"][data-mode="light"] {
+  --bg: #faeef5;
+  --surface: #ffffff;
+  --surface-2: #f0d9e8;
+  --text: #2a0c1e;
+  --muted: #71496a;
+  --accent: #c81d6a;
+  --accent-2: #0a8aa0;
+  --border: #d8b3cc;
+}
+[data-theme="fallout"][data-mode="light"] {
+  --bg: #eef1e0;
+  --surface: #f8faea;
+  --surface-2: #dde5be;
+  --text: #1d2410;
+  --muted: #5d6c3d;
+  --accent: #4a7a14;
+  --accent-2: #8a5d10;
+  --border: #c4d09a;
+}
+[data-theme="warhammer"][data-mode="light"] {
+  --bg: #f1ece1;
+  --surface: #fbf6ea;
+  --surface-2: #e6dec8;
+  --text: #211a12;
+  --muted: #6a5a44;
+  --accent: #8a6a14;
+  --accent-2: #8a2820;
+  --border: #cdc0a3;
+}

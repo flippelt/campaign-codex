@@ -1,0 +1,59 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import {
+  getCampaigns, getCampaign, getTags, typeCounts, withBase
+} from '../../../lib/codex'
+
+export async function getStaticPaths() {
+  const campaigns = await getCampaigns()
+  return campaigns.map((c) => ({ params: { campaign: c.id } }))
+}
+
+const { campaign: id } = Astro.params
+const campaign = await getCampaign(id!)
+if (!campaign) return Astro.redirect(withBase('/'))
+
+const campaigns = await getCampaigns()
+const counts = await typeCounts(id!)
+const tags = await getTags(id!)
+
+// Largest tag → 1.5rem; smallest → 0.85rem. Tag cloud feel.
+const max = tags.reduce((m, t) => Math.max(m, t.count), 1)
+const min = tags.reduce((m, t) => Math.min(m, t.count), max)
+const sizeFor = (n: number) => {
+  if (max === min) return 1
+  return 0.85 + ((n - min) / (max - min)) * 0.65
+}
+---
+
+<BaseLayout
+  title={`Tags · ${campaign.data.name}`}
+  theme={campaign.data.theme}
+  campaigns={campaigns}
+  current={id}
+  sidebar={{ campaignId: id!, campaignName: campaign.data.name, emoji: campaign.data.emoji, counts, active: '' }}
+>
+  <p class="breadcrumb">
+    <a href={withBase(`/${id}/`)}>{campaign.data.emoji} {campaign.data.name}</a> › Tags
+  </p>
+  <div class="page-head">
+    <h1>🏷️ Tags</h1>
+    <p>{tags.length} {tags.length === 1 ? 'tag' : 'tags'} nesta campanha</p>
+  </div>
+
+  {tags.length === 0 ? (
+    <p class="empty">Nenhuma entrada nesta campanha tem tags ainda.</p>
+  ) : (
+    <div class="tag-cloud">
+      {tags.map((t) => (
+        <a
+          class="tag-cloud__tag"
+          href={withBase(`/${id}/tags/${t.slug}/`)}
+          style={`font-size:${sizeFor(t.count).toFixed(2)}rem`}
+        >
+          #{t.tag} <span class="tag-cloud__count">{t.count}</span>
+        </a>
+      ))}
+    </div>
+  )}
+</BaseLayout>

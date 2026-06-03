@@ -9,20 +9,41 @@ const { entry } = Astro.props
 const { type } = parseEntryId(entry.id)
 const typeMeta = isTypeKey(type) ? TYPES[type] : undefined
 const { title, emoji, summary, image, status, faction, role, date, tags } = entry.data
-// Searchable text for the client-side filter on listing pages.
 const haystack = [title, summary, status, faction, role, ...tags].filter(Boolean).join(' ').toLowerCase()
+
+// Keep the cards short and predictable: pick the 2 most informative meta
+// chips, and surface the rest as a "+N" overflow so cards stay the same
+// height regardless of how richly the frontmatter is filled in.
+const allMeta = [
+  status && { label: status },
+  role && { label: role, emoji: '🎖️' },
+  faction && { label: faction, emoji: '🏴' },
+  date && { label: date, emoji: '🕑' }
+].filter(Boolean) as { label: string; emoji?: string }[]
+const visibleMeta = allMeta.slice(0, 2)
+const overflowCount = allMeta.length - visibleMeta.length
 ---
 
-<a class="card" href={withBase(entryHref(entry))} data-search={haystack}>
-  {image && <img class="card__cover" src={asset(image)} alt={title} loading="lazy" />}
-  <span class="card__emoji">{emoji ?? typeMeta?.emoji ?? '📄'}</span>
-  <h3 class="card__title">{title}</h3>
-  {summary && <p class="card__summary">{summary}</p>}
-  <div class="chips">
-    {typeMeta && <span class="chip chip--accent">{typeMeta.emoji} {typeMeta.singular}</span>}
-    {status && <span class="chip">{status}</span>}
-    {faction && <span class="chip">🏴 {faction}</span>}
-    {role && <span class="chip">🎖️ {role}</span>}
-    {date && <span class="chip">🕑 {date}</span>}
+<a class={`card${image ? ' card--has-cover' : ''}`} href={withBase(entryHref(entry))} data-search={haystack}>
+  <div class="card__cover-wrap">
+    {image
+      ? <img class="card__cover" src={asset(image)} alt="" loading="lazy" />
+      : <span class="card__cover-emoji" aria-hidden="true">{emoji ?? typeMeta?.emoji ?? '📄'}</span>
+    }
+    {typeMeta && (
+      <span class="card__type">{typeMeta.emoji} {typeMeta.singular}</span>
+    )}
+  </div>
+  <div class="card__body">
+    <h3 class="card__title">{image && (emoji ?? typeMeta?.emoji)} {title}</h3>
+    {summary && <p class="card__summary">{summary}</p>}
+    {(visibleMeta.length > 0 || overflowCount > 0) && (
+      <div class="chips card__chips">
+        {visibleMeta.map((m) => (
+          <span class="chip">{m.emoji ? `${m.emoji} ` : ''}{m.label}</span>
+        ))}
+        {overflowCount > 0 && <span class="chip chip--muted">+{overflowCount}</span>}
+      </div>
+    )}
   </div>
 </a>

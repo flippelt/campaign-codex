@@ -3,7 +3,8 @@ import { getCollection, render } from 'astro:content'
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 import {
   getCampaigns, getCampaign, typeCounts, parseEntryId, allowedCampaignIds,
-  TYPES, withBase, asset, isTypeKey, type Entry
+  getEntries, entryHref,
+  TYPES, withBase, asset, isTypeKey, tagSlug, type Entry, type TypeKey
 } from '../../../lib/codex'
 
 export async function getStaticPaths() {
@@ -28,8 +29,15 @@ if (!campaign) return Astro.redirect(withBase('/'))
 const campaigns = await getCampaigns()
 const counts = await typeCounts(id)
 const meta = isTypeKey(type) ? TYPES[type] : undefined
-const { Content } = await render(entry)
+const { Content, headings } = await render(entry)
 const d = entry.data
+const toc = headings.filter((h) => h.depth === 2 || h.depth === 3)
+
+// Sibling entries (same campaign + type) for prev/next nav.
+const siblings = isTypeKey(type) ? await getEntries(id, type as TypeKey) : []
+const myIndex = siblings.findIndex((e) => e.id === entry.id)
+const prev = myIndex > 0 ? siblings[myIndex - 1] : null
+const next = myIndex >= 0 && myIndex < siblings.length - 1 ? siblings[myIndex + 1] : null
 
 const facts: [string, string][] = []
 if (d.status) facts.push(['Status', d.status])
@@ -37,7 +45,7 @@ if (d.role) facts.push(['Papel', d.role])
 if (d.faction) facts.push(['Facção', d.faction])
 if (d.location) facts.push(['Local', d.location])
 if (d.date) facts.push(['Data', d.date])
-const hasAside = !!d.image || facts.length > 0 || d.tags.length > 0
+const hasAside = !!d.image || facts.length > 0 || d.tags.length > 0 || toc.length >= 3
 ---
 
 <BaseLayout
@@ -66,6 +74,18 @@ const hasAside = !!d.image || facts.length > 0 || d.tags.length > 0
 
     {hasAside && (
       <aside class="aside">
+        {toc.length >= 3 && (
+          <nav class="toc" aria-label="Sumário">
+            <p class="toc__title">Nesta página</p>
+            <ol class="toc__list">
+              {toc.map((h) => (
+                <li class={`toc__item toc__item--d${h.depth}`}>
+                  <a href={`#${h.slug}`}>{h.text}</a>
+                </li>
+              ))}
+            </ol>
+          </nav>
+        )}
         {d.image && <img class="aside__img" src={asset(d.image)} alt={d.title} />}
         {facts.length > 0 && (
           <dl>
@@ -79,10 +99,29 @@ const hasAside = !!d.image || facts.length > 0 || d.tags.length > 0
         )}
         {d.tags.length > 0 && (
           <div class="chips" style="margin-top:12px">
-            {d.tags.map((t) => <span class="chip">#{t}</span>)}
+            {d.tags.map((t) => (
+              <a class="chip chip--link" href={withBase(`/${id}/tags/${tagSlug(t)}/`)}>#{t}</a>
+            ))}
           </div>
         )}
       </aside>
     )}
   </article>
+
+  {(prev || next) && (
+    <nav class="prevnext" aria-label="Navegar entradas">
+      {prev ? (
+        <a class="prevnext__link prevnext__link--prev" href={withBase(entryHref(prev))} rel="prev">
+          <span class="prevnext__dir">← Anterior</span>
+          <span class="prevnext__title">{prev.data.emoji ?? meta?.emoji ?? '📄'} {prev.data.title}</span>
+        </a>
+      ) : <span></span>}
+      {next ? (
+        <a class="prevnext__link prevnext__link--next" href={withBase(entryHref(next))} rel="next">
+          <span class="prevnext__dir">Próxima →</span>
+          <span class="prevnext__title">{next.data.emoji ?? meta?.emoji ?? '📄'} {next.data.title}</span>
+        </a>
+      ) : <span></span>}
+    </nav>
+  )}
 </BaseLayout>

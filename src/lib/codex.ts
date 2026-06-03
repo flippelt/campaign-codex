@@ -91,6 +91,39 @@ export async function getEntries(campaign: string, type?: string): Promise<Entry
     )
 }
 
+// URL-safe slug for a tag (preserves diacritics-stripped lowercase form).
+export function tagSlug(tag: string): string {
+  return tag
+    .normalize('NFD')
+    .replace(/\p{M}/gu, '')
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-|-$/g, '')
+}
+
+// All unique tags for a campaign, with counts and slugs, sorted by count desc.
+export async function getTags(campaign: string): Promise<{ tag: string; slug: string; count: number }[]> {
+  const entries = await getEntries(campaign)
+  const map = new Map<string, { tag: string; count: number }>()
+  for (const e of entries) {
+    for (const t of e.data.tags) {
+      const slug = tagSlug(t)
+      if (!slug) continue
+      const cur = map.get(slug)
+      if (cur) cur.count++
+      else map.set(slug, { tag: t, count: 1 })
+    }
+  }
+  return Array.from(map, ([slug, v]) => ({ slug, ...v }))
+    .sort((a, b) => b.count - a.count || a.tag.localeCompare(b.tag))
+}
+
+// Entries in a campaign whose tags include the given slug.
+export async function getEntriesByTag(campaign: string, slug: string): Promise<Entry[]> {
+  return (await getEntries(campaign)).filter((e) => e.data.tags.some((t) => tagSlug(t) === slug))
+}
+
 // Count entries per type for a campaign (for the nav + campaign home).
 export async function typeCounts(campaign: string): Promise<Record<string, number>> {
   const entries = await getEntries(campaign)

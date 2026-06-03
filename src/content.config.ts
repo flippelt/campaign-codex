@@ -12,6 +12,8 @@ const campaigns = defineCollection({
     theme: z.enum(THEME_IDS).default('fantasy'),
     emoji: z.string().default('📖'),
     summary: z.string().optional(),
+    // Optional cover image shown on the campaign home page hero.
+    cover: z.string().optional(),
     order: z.number().default(0),
     // Include this campaign in the public demo build (GitHub Pages). Your
     // private campaigns stay off the demo unless you opt them in.

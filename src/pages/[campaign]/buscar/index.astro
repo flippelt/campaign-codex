@@ -1,0 +1,132 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro'
+import { getCampaigns, getCampaign, typeCounts, withBase } from '../../../lib/codex'
+
+export async function getStaticPaths() {
+  const campaigns = await getCampaigns()
+  return campaigns.map((c) => ({ params: { campaign: c.id } }))
+}
+
+const { campaign: id } = Astro.params
+const campaign = await getCampaign(id!)
+if (!campaign) return Astro.redirect(withBase('/'))
+
+const campaigns = await getCampaigns()
+const counts = await typeCounts(id!)
+const indexUrl = withBase(`/${id}/search.json`)
+---
+
+<BaseLayout
+  title={`Buscar · ${campaign.data.name}`}
+  theme={campaign.data.theme}
+  campaigns={campaigns}
+  current={id}
+  sidebar={{ campaignId: id!, campaignName: campaign.data.name, emoji: campaign.data.emoji, counts, active: 'search' }}
+>
+  <p class="breadcrumb">
+    <a href={withBase(`/${id}/`)}>{campaign.data.emoji} {campaign.data.name}</a> › Buscar
+  </p>
+  <div class="page-head">
+    <h1>🔎 Buscar em {campaign.data.name}</h1>
+    <p>Pesquise por título, resumo, tags ou texto da entrada.</p>
+  </div>
+
+  <input
+    class="filter"
+    type="search"
+    id="searchInput"
+    placeholder="Digite ao menos 2 caracteres…"
+    autocomplete="off"
+    autofocus
+  />
+  <p class="search-status" id="searchStatus" aria-live="polite"></p>
+  <ul class="search-results" id="searchResults"></ul>
+
+  <script is:inline define:vars={{ indexUrl }}>
+    const input = document.getElementById('searchInput')
+    const list = document.getElementById('searchResults')
+    const status = document.getElementById('searchStatus')
+    let data = null
+    let loading = null
+
+    const escapeHtml = (s) => s.replace(/[&<>"']/g, (c) =>
+      ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]))
+
+    const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+
+    const highlight = (text, q) => {
+      const safe = escapeHtml(text)
+      if (!q) return safe
+      return safe.replace(new RegExp(escapeRe(q), 'gi'), '<mark>$&</mark>')
+    }
+
+    const snippet = (body, q) => {
+      if (!body) return ''
+      const i = body.toLowerCase().indexOf(q.toLowerCase())
+      if (i < 0) return ''
+      const start = Math.max(0, i - 60)
+      const end = Math.min(body.length, i + q.length + 100)
+      const pre = start > 0 ? '…' : ''
+      const post = end < body.length ? '…' : ''
+      return pre + body.slice(start, end) + post
+    }
+
+    const load = () => loading ??= fetch(indexUrl)
+      .then((r) => r.json())
+      .then((j) => (data = j.items))
+
+    const render = (q) => {
+      if (q.length < 2) {
+        list.innerHTML = ''
+        status.textContent = ''
+        return
+      }
+      const ql = q.toLowerCase()
+      const hits = data
+        .map((it) => {
+          const inTitle = it.title.toLowerCase().includes(ql)
+          const inSummary = it.summary.toLowerCase().includes(ql)
+          const inTags = it.tags.some((t) => t.toLowerCase().includes(ql))
+          const inBody = it.body.toLowerCase().includes(ql)
+          if (!inTitle && !inSummary && !inTags && !inBody) return null
+          // crude score: title > tags > summary > body
+          const score = (inTitle ? 8 : 0) + (inTags ? 4 : 0) + (inSummary ? 2 : 0) + (inBody ? 1 : 0)
+          return { it, score, snip: !inTitle && !inSummary ? snippet(it.body, q) : '' }
+        })
+        .filter(Boolean)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 50)
+
+      status.textContent = hits.length === 0
+        ? 'Nada encontrado.'
+        : `${hits.length} resultado${hits.length === 1 ? '' : 's'}${hits.length === 50 ? ' (mostrando os 50 melhores)' : ''}`
+
+      list.innerHTML = hits.map(({ it, snip }) => `
+        <li class="search-hit">
+          <a class="search-hit__link" href="${it.href}">
+            <div class="search-hit__head">
+              <span class="search-hit__emoji">${escapeHtml(it.emoji)}</span>
+              <span class="search-hit__title">${highlight(it.title, q)}</span>
+              <span class="chip chip--accent">${escapeHtml(it.typeEmoji)} ${escapeHtml(it.typeLabel)}</span>
+            </div>
+            ${it.summary ? `<p class="search-hit__summary">${highlight(it.summary, q)}</p>` : ''}
+            ${snip ? `<p class="search-hit__snippet">${highlight(snip, q)}</p>` : ''}
+            ${it.tags.length ? `<div class="search-hit__tags">${
+              it.tags.map((t) => `<span class="chip">#${highlight(t, q)}</span>`).join('')
+            }</div>` : ''}
+          </a>
+        </li>
+      `).join('')
+    }
+
+    input.addEventListener('input', async () => {
+      const q = input.value.trim()
+      if (q.length < 2) { render(q); return }
+      if (!data) {
+        status.textContent = 'Carregando…'
+        await load()
+      }
+      render(q)
+    })
+  </script>
+</BaseLayout>
