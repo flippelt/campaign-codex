@@ -1,7 +1,7 @@
-name: Deploy demo to GitHub Pages
+name: Deploy site to GitHub Pages
 
-# Publishes ONLY the demo (campaigns with `demo: true`) under the repo subpath.
-# The full site is deployed elsewhere (Netlify).
+# Publishes the full site (all campaigns) under the repo subpath.
+# This repo is the public motor + demo — no campaigns are gated.
 on:
   push:
     branches: [main]
@@ -26,12 +26,12 @@ jobs:
           node-version: 22
           cache: npm
       - run: npm ci
-      - run: npm run build:demo
+      - run: npm run build
         env:
           BASE: /campaign-codex/
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist-demo
+          path: dist
 
   deploy:
     needs: build

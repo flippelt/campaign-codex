@@ -4,7 +4,6 @@ theme: sci-fi
 emoji: 🚀
 summary: Reboque de refinaria USCSS Nostromo, desvio para LV-426. Horror corporativo no espaço profundo.
 order: 1
-demo: true
 ---
 
 A tripulação do **USCSS Nostromo** é acordada do hipersono por um sinal de

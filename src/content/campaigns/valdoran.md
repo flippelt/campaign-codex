@@ -4,7 +4,6 @@ theme: fantasy
 emoji: ⚔️
 summary: Um reino dividido pela Grande Fenda. Magia antiga desperta enquanto casas nobres disputam o trono vazio.
 order: 2
-demo: true
 ---
 
 O reino de **Valdoran** não tem rei há doze invernos. A **Grande Fenda** que
