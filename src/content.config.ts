@@ -21,8 +21,10 @@ const campaigns = defineCollection({
       cover: z.string().optional(),
       coverArt: image().optional(),
       order: z.number().default(0),
-      // Include this campaign in the public demo build (GitHub Pages). Your
-      // private campaigns stay off the demo unless you opt them in.
+      // Marks a campaign as a shared demo/showcase campaign. demo:true hides it
+      // from the build — used by the private repo (contracodex) to keep the
+      // demo campaigns off its site. This public repo leaves its own campaigns
+      // unflagged, so its main build IS the public demo.
       demo: z.boolean().default(false)
     })
 })

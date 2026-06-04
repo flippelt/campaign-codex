@@ -6,7 +6,6 @@
   "scripts": {
     "dev": "astro dev",
     "build": "astro build",
-    "build:demo": "astro build --mode demo --outDir dist-demo",
     "check": "astro check",
     "preview": "astro preview",
     "astro": "astro",
