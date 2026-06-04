@@ -1,5 +1,7 @@
-# Full site at the domain root (base "/"). Connect the repo on Netlify and
-# deploy — no extra settings. The public demo (a subset) goes to GitHub Pages.
+# Optional Netlify target. Builds the full site at the domain root (base "/",
+# the default). Connect the repo on Netlify and deploy — no extra settings:
+# the canonical URL comes from Netlify's auto-injected $URL (see astro.config).
+# GitHub Pages remains the primary publish target via .github/workflows.
 [build]
   command = "npm run build"
   publish = "dist"

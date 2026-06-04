@@ -66,12 +66,16 @@ function tagLint() {
 
 // Static site. For GitHub Pages (project repo) the build base is the repo
 // name; on a custom domain / Netlify it's served at the root. Override the
-// base at build time with `BASE` (e.g. BASE=/campaign-codex/).
+// base at build time with `BASE` (e.g. BASE=/campaign-codex/). Netlify serves
+// at the root, so it leaves BASE unset (defaults to '/').
 const base = process.env.BASE ?? '/'
 
-// Canonical site URL for sitemap and absolute OG/Twitter URLs. Override at
-// build time with SITE (e.g. SITE=https://contracodex.netlify.app).
-const site = process.env.SITE ?? 'https://contracodex.netlify.app'
+// Canonical site URL for sitemap and absolute OG/Twitter URLs. Resolution:
+//   1. SITE          — set explicitly (the GitHub Pages workflow does this).
+//   2. URL           — injected automatically by Netlify (the site's main URL),
+//                      so Netlify deploys get the right canonical with no config.
+//   3. fallback      — used only for local builds with neither set.
+const site = process.env.SITE ?? process.env.URL ?? 'https://contracodex.netlify.app'
 
 // Wiki-style [[links]] in markdown:
 //   [[mestre-corvo]]                  → link to first entry in current campaign whose slug is "mestre-corvo"
