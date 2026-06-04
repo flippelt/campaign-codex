@@ -10,6 +10,7 @@ export const THEMES = {
   'warhammer-inquisition': { label: 'WH40K · Inquisition', emoji: '⚜️' },
   'warhammer-astra-militarum': { label: 'WH40K · Astra Militarum', emoji: '🎖️' },
   'warhammer-space-marines': { label: 'WH40K · Space Marines', emoji: '🛡️' },
+  deathwatch: { label: 'WH40K · Deathwatch', emoji: '🗡️' },
   'cyberpunk-red': { label: 'Cyberpunk RED', emoji: '🌃' },
   'blade-runner': { label: 'Blade Runner', emoji: '🌧️' },
   lancer: { label: 'LANCER', emoji: '🤖' },

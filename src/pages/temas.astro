@@ -1,0 +1,162 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import { getCampaigns } from '../lib/codex'
+import { THEMES } from '../lib/themes'
+
+const campaigns = await getCampaigns()
+const themes = Object.entries(THEMES) as [string, { label: string; emoji: string }][]
+const pangram = 'A ágil raposa marrom salta sobre o cão. Ãàâ çéê íõ óú — 0123456789'
+---
+
+<BaseLayout
+  title="Temas · Campaign Codex"
+  description="Galeria de temas disponíveis para campanhas"
+  campaigns={campaigns}
+>
+  <div class="page-head">
+    <h1>🎨 Temas</h1>
+    <p>
+      Os {themes.length} temas disponíveis. Cada campanha escolhe um no frontmatter (<code
+        >theme:</code
+      >). Use o botão de claro/escuro no topo para ver as variantes. Cada cartão renderiza com a
+      própria paleta e fontes.
+    </p>
+  </div>
+
+  <div class="tgrid">
+    {
+      themes.map(([id, meta]) => (
+        <article class="tcard" data-theme={id}>
+          <header class="tcard__bar">
+            <span class="tcard__brand">
+              {meta.emoji} {meta.label}
+            </span>
+          </header>
+          <div class="tcard__body">
+            <h2 class="tcard__title">{meta.label}</h2>
+            <p class="tcard__text">
+              {pangram} <a href="#">link de exemplo</a>.
+            </p>
+            <div class="tcard__row">
+              <span class="tchip tchip--accent">destaque</span>
+              <span class="tchip">tag</span>
+              <button class="tbtn" type="button">
+                Ação
+              </button>
+            </div>
+            <div class="tcard__swatches" aria-hidden="true">
+              <span style="background:var(--bg)" title="bg" />
+              <span style="background:var(--surface-2)" title="surface-2" />
+              <span style="background:var(--accent)" title="accent" />
+              <span style="background:var(--accent-2)" title="accent-2" />
+              <span style="background:var(--text)" title="text" />
+            </div>
+            <code class="tcard__id">theme: {id}</code>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</BaseLayout>
+
+<style>
+  .tgrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+  }
+  /* Each card paints itself with its own theme vars (set via data-theme). */
+  .tcard {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+  }
+  .tcard__bar {
+    display: flex;
+    align-items: center;
+    padding: 10px 14px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+  }
+  .tcard__brand {
+    font-family: var(--font-head);
+    font-weight: 700;
+    color: var(--text);
+    font-size: 1.05rem;
+    line-height: 1.1;
+  }
+  .tcard__body {
+    padding: 16px 16px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .tcard__title {
+    font-family: var(--font-head);
+    color: var(--text);
+    margin: 0;
+    font-size: 1.5rem;
+    line-height: 1.15;
+  }
+  .tcard__text {
+    font-family: var(--font);
+    color: var(--text);
+    margin: 0;
+    font-size: 0.95rem;
+    line-height: 1.5;
+  }
+  .tcard__text a {
+    color: var(--accent);
+  }
+  .tcard__row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+  .tchip {
+    font-family: var(--font);
+    font-size: 0.74rem;
+    padding: 2px 10px;
+    border-radius: 999px;
+    background: var(--surface-2);
+    color: var(--muted);
+    border: 1px solid var(--border);
+  }
+  .tchip--accent {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  }
+  .tbtn {
+    font-family: var(--font);
+    cursor: default;
+    margin-left: auto;
+    padding: 5px 14px;
+    border-radius: 8px;
+    border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
+    background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+    color: var(--accent);
+    font-weight: 600;
+  }
+  .tcard__swatches {
+    display: flex;
+    gap: 6px;
+  }
+  .tcard__swatches span {
+    flex: 1;
+    height: 26px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+  }
+  .tcard__id {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    background: var(--surface-2);
+    padding: 3px 8px;
+    border-radius: 6px;
+    align-self: flex-start;
+  }
+</style>

@@ -97,16 +97,30 @@
   --font-head: 'Saira Stencil One', var(--sans);
 }
 
-/* === WH40K · Space Marines — Ultramarines blue + gold; heavy display === */
+/* === WH40K · Space Marines — Blood Angels: heroic crimson + gold; heavy display === */
 [data-theme='warhammer-space-marines'] {
-  --bg: light-dark(#e8edf6, #070b14);
-  --surface: light-dark(#f4f7fc, #0f1626);
-  --surface-2: light-dark(#d3deef, #172238);
-  --text: light-dark(#0c1730, #e6edf8);
-  --muted: light-dark(#48597a, #92a2c0);
-  --accent: light-dark(#1f5bb0, #3a7bd5);
-  --accent-2: light-dark(#9a7d14, #d4af37);
-  --border: light-dark(#b6c6e0, #203052);
+  --bg: light-dark(#f6eae6, #120809);
+  --surface: light-dark(#fdf4f1, #1d0d0e);
+  --surface-2: light-dark(#efd6cf, #2a1315);
+  --text: light-dark(#2a100c, #f4e6df);
+  --muted: light-dark(#7a4a42, #c49a93);
+  --accent: light-dark(#b01418, #d61f26);
+  --accent-2: light-dark(#9a7510, #e8b923);
+  --border: light-dark(#e0c0b7, #441c1d);
+  --font: 'Exo 2', var(--sans);
+  --font-head: 'Teko', var(--sans);
+}
+
+/* === WH40K · Deathwatch — black armor, cold silver/steel, crimson === */
+[data-theme='deathwatch'] {
+  --bg: light-dark(#eceef0, #0a0b0c);
+  --surface: light-dark(#f7f8f9, #131517);
+  --surface-2: light-dark(#d8dde1, #1d2024);
+  --text: light-dark(#11151a, #e9edf0);
+  --muted: light-dark(#525c64, #98a1a9);
+  --accent: light-dark(#4a5862, #aab4be);
+  --accent-2: light-dark(#b01622, #d0212f);
+  --border: light-dark(#c3cace, #2a3036);
   --font: 'Exo 2', var(--sans);
   --font-head: 'Teko', var(--sans);
 }

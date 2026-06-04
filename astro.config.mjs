@@ -1,4 +1,7 @@
-// @ts-check
+// Note: no `// @ts-check` here — the remark/rehype plugins below walk mdast/hast
+// trees whose nodes are untyped `any` without pulling in @types/mdast/@types/hast
+// and heavy annotations. `npm run check` (astro check) type-checks the app code
+// (.ts/.astro); this build config is exercised by the build itself.
 import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { defineConfig } from 'astro/config'
