@@ -20,7 +20,8 @@ interface Props {
   campaigns: Campaign[]
   current?: string
   sidebar?: SidebarData
-  ogImage?: string
+  /** Key into the generated OG images (/og/<ogKey>.png). Defaults to 'index'. */
+  ogKey?: string
   ogType?: 'website' | 'article'
 }
 
@@ -31,13 +32,14 @@ const {
   campaigns,
   current,
   sidebar,
-  ogImage,
+  ogKey,
   ogType = 'website'
 } = Astro.props
 const hasSidebar = !!sidebar
 const currentCampaign = campaigns.find((c) => c.id === current)
 const canonical = new URL(Astro.url.pathname, Astro.site ?? Astro.url).href
-const ogImageUrl = ogImage ? new URL(withBase(ogImage), Astro.site ?? Astro.url).href : undefined
+// Every page gets a build-generated OG card (see src/pages/og/[...route].ts).
+const ogImageUrl = new URL(withBase(`/og/${ogKey ?? 'index'}.png`), Astro.site ?? Astro.url).href
 ---
 
 <!doctype html>
@@ -57,13 +59,13 @@ const ogImageUrl = ogImage ? new URL(withBase(ogImage), Astro.site ?? Astro.url)
     <meta property="og:url" content={canonical} />
     <meta property="og:site_name" content="Campaign Codex" />
     <meta property="og:locale" content="pt_BR" />
-    {ogImageUrl && <meta property="og:image" content={ogImageUrl} />}
+    <meta property="og:image" content={ogImageUrl} />
 
     {/* Twitter Card */}
-    <meta name="twitter:card" content={ogImageUrl ? 'summary_large_image' : 'summary'} />
+    <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     {description && <meta name="twitter:description" content={description} />}
-    {ogImageUrl && <meta name="twitter:image" content={ogImageUrl} />}
+    <meta name="twitter:image" content={ogImageUrl} />
     {
       current && (
         <link

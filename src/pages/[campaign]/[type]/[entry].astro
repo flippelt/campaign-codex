@@ -1,6 +1,7 @@
 ---
 import { getCollection, render } from 'astro:content'
 import BaseLayout from '../../../layouts/BaseLayout.astro'
+import Art from '../../../components/Art.astro'
 import {
   getCampaigns,
   getCampaign,
@@ -63,7 +64,12 @@ if (d.faction) facts.push(['Facção', d.faction])
 if (d.location) facts.push(['Local', d.location])
 if (d.date) facts.push(['Data', d.date])
 const hasAside =
-  !!d.image || facts.length > 0 || d.tags.length > 0 || toc.length >= 3 || backlinks.length > 0
+  !!d.art ||
+  !!d.image ||
+  facts.length > 0 ||
+  d.tags.length > 0 ||
+  toc.length >= 3 ||
+  backlinks.length > 0
 ---
 
 <BaseLayout
@@ -72,7 +78,7 @@ const hasAside =
   theme={campaign.data.theme}
   campaigns={campaigns}
   current={id}
-  ogImage={d.image}
+  ogKey={`${id}/${type}/${parseEntryId(entry.id).slug}`}
   ogType="article"
   sidebar={{
     campaignId: id,
@@ -121,7 +127,11 @@ const hasAside =
               </ol>
             </nav>
           )}
-          {d.image && <img class="aside__img" src={asset(d.image)} alt={d.title} />}
+          {d.art ? (
+            <Art src={d.art} class="aside__img" alt={d.title} widths={[260, 520]} sizes="260px" />
+          ) : (
+            d.image && <img class="aside__img" src={asset(d.image)} alt={d.title} />
+          )}
           {facts.length > 0 && (
             <dl>
               {facts.map(([k, v]) => (

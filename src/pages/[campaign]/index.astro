@@ -2,6 +2,7 @@
 import { render } from 'astro:content'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import EntryCard from '../../components/EntryCard.astro'
+import Art from '../../components/Art.astro'
 import {
   getCampaigns,
   getCampaign,
@@ -32,6 +33,7 @@ const sections = await Promise.all(
   TYPE_KEYS.map(async (key) => ({ key, entries: (await getEntries(id!, key)).slice(0, 6) }))
 )
 const theme = THEME_LABELS[campaign.data.theme]
+const hasCover = !!campaign.data.coverArt || !!campaign.data.cover
 ---
 
 <BaseLayout
@@ -40,7 +42,7 @@ const theme = THEME_LABELS[campaign.data.theme]
   theme={campaign.data.theme}
   campaigns={campaigns}
   current={id}
-  ogImage={campaign.data.cover}
+  ogKey={id}
   sidebar={{
     campaignId: id!,
     campaignName: campaign.data.name,
@@ -49,10 +51,21 @@ const theme = THEME_LABELS[campaign.data.theme]
     active: 'home'
   }}
 >
-  <section class={`hero${campaign.data.cover ? ' hero--has-cover' : ''}`}>
+  <section class={`hero${hasCover ? ' hero--has-cover' : ''}`}>
     {
-      campaign.data.cover && (
-        <img class="hero__cover" src={asset(campaign.data.cover)} alt="" loading="eager" />
+      campaign.data.coverArt ? (
+        <Art
+          src={campaign.data.coverArt}
+          class="hero__cover"
+          alt=""
+          loading="eager"
+          widths={[720, 1180]}
+          sizes="(max-width: 860px) 100vw, 1180px"
+        />
+      ) : (
+        campaign.data.cover && (
+          <img class="hero__cover" src={asset(campaign.data.cover)} alt="" loading="eager" />
+        )
       )
     }
     <div class="hero__overlay"></div>

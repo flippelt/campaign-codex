@@ -1,0 +1,20 @@
+---
+// Renders a local raster image through Astro's image pipeline (AVIF/WebP +
+// responsive srcset). Used for the optional `art`/`coverArt` frontmatter
+// fields; passthrough strings (maps, URLs) still use a plain <img>.
+import { Image } from 'astro:assets'
+import type { ImageMetadata } from 'astro'
+
+interface Props {
+  src: ImageMetadata
+  alt: string
+  class?: string
+  loading?: 'eager' | 'lazy'
+  widths?: number[]
+  sizes?: string
+}
+
+const { src, alt, class: cls, loading = 'lazy', widths, sizes } = Astro.props
+---
+
+<Image src={src} alt={alt} class={cls} loading={loading} widths={widths} sizes={sizes} />

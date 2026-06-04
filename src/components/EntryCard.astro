@@ -8,6 +8,7 @@ import {
   isTypeKey,
   type Entry
 } from '../lib/codex'
+import Art from './Art.astro'
 
 interface Props {
   entry: Entry
@@ -16,7 +17,7 @@ interface Props {
 const { entry } = Astro.props
 const { type } = parseEntryId(entry.id)
 const typeMeta = isTypeKey(type) ? TYPES[type] : undefined
-const { title, emoji, summary, image, status, faction, role, date, tags, draft } = entry.data
+const { title, emoji, summary, image, art, status, faction, role, date, tags, draft } = entry.data
 const isDraft = draft && import.meta.env.DEV
 const haystack = [title, summary, status, faction, role, ...tags]
   .filter(Boolean)
@@ -43,7 +44,15 @@ const overflowCount = allMeta.length - visibleMeta.length
 >
   <div class="card__cover-wrap">
     {
-      image ? (
+      art ? (
+        <Art
+          src={art}
+          class="card__cover"
+          alt=""
+          widths={[240, 480]}
+          sizes="(max-width: 860px) 90vw, 280px"
+        />
+      ) : image ? (
         <img class="card__cover" src={asset(image)} alt="" loading="lazy" />
       ) : (
         <span class="card__cover-emoji" aria-hidden="true">
