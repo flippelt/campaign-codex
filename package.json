@@ -18,6 +18,9 @@
     "astro-og-canvas": "^0.11.1",
     "canvaskit-wasm": "^0.41.1"
   },
+  "overrides": {
+    "yaml": "^2.8.3"
+  },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",
     "@astrojs/sitemap": "^3.7.3",
