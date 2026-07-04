@@ -1,5 +1,7 @@
 # 📚 Campaign Codex
 
+[![Last commit](https://img.shields.io/github/last-commit/flippelt/campaign-codex)](https://github.com/flippelt/campaign-codex/commits)
+
 Um **wiki de campanhas de RPG**: história, mapas, acontecimentos, NPCs e
 personagens — multi-campanha, com temas por gênero (sci-fi, fantasia, cyberpunk,
 fallout, warhammer), bom suporte a emoji, menu responsivo e manutenção simples
