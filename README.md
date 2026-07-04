@@ -1,6 +1,6 @@
 # 📚 Campaign Codex
 
-[![Last commit](https://img.shields.io/github/last-commit/flippelt/campaign-codex)](https://github.com/flippelt/campaign-codex/commits)
+[![CI](https://img.shields.io/github/actions/workflow/status/flippelt/campaign-codex/ci.yml?label=CI)](https://github.com/flippelt/campaign-codex/actions) [![Last commit](https://img.shields.io/github/last-commit/flippelt/campaign-codex)](https://github.com/flippelt/campaign-codex/commits) [![License](https://img.shields.io/github/license/flippelt/campaign-codex)](https://github.com/flippelt/campaign-codex/blob/main/LICENSE) ![Top language](https://img.shields.io/github/languages/top/flippelt/campaign-codex) ![Repo size](https://img.shields.io/github/repo-size/flippelt/campaign-codex) ![Commit activity](https://img.shields.io/github/commit-activity/m/flippelt/campaign-codex) ![Issues](https://img.shields.io/github/issues/flippelt/campaign-codex)
 
 Um **wiki de campanhas de RPG**: história, mapas, acontecimentos, NPCs e
 personagens — multi-campanha, com temas por gênero (sci-fi, fantasia, cyberpunk,
