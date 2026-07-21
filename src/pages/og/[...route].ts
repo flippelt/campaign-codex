@@ -37,7 +37,8 @@ for (const c of await getCampaigns()) {
 }
 
 export const { getStaticPaths, GET } = await OGImageRoute({
-  param: 'route',
+  // astro-og-canvas ≥0.12 infers the route param from the filename
+  // (`[...route].ts` → `route`); the old `param` option was removed.
   pages,
   getImageOptions: (_path, page: OGPage) => {
     const c = ogPalette(page.theme)
