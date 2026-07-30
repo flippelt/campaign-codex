@@ -36,8 +36,10 @@ for (const c of await getCampaigns()) {
   }
 }
 
+// astro-og-canvas 0.13 removeu a opção `param`: o nome do parâmetro passou a
+// ser derivado do próprio arquivo de rota (`[...route]` -> `route`), então
+// passá-lo explicitamente agora é erro de tipo.
 export const { getStaticPaths, GET } = await OGImageRoute({
-  param: 'route',
   pages,
   getImageOptions: (_path, page: OGPage) => {
     const c = ogPalette(page.theme)
