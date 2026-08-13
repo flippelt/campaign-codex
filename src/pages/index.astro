@@ -11,13 +11,14 @@ const total = (id: string) =>
 ---
 
 <BaseLayout title="Campaign Codex" description="Wiki de campanhas de RPG" campaigns={campaigns}>
-  <div class="page-head">
-    <h1>📚 Campaign Codex</h1>
+  <header class="masthead">
+    <p class="masthead__kicker">Wiki de campanhas</p>
+    <h1>Campaign Codex</h1>
     <p>
-      Um wiki para suas campanhas de RPG — história, mapas, acontecimentos, NPCs e personagens.
-      Escolha uma campanha para começar.
+      História, mapas, acontecimentos, NPCs e personagens — um códice para cada mesa. Escolha uma
+      campanha para abrir.
     </p>
-  </div>
+  </header>
 
   {
     campaigns.length === 0 ? (
@@ -25,9 +26,9 @@ const total = (id: string) =>
         Nenhuma campanha ainda. Crie <code>src/content/campaigns/&lt;id&gt;.md</code>.
       </p>
     ) : (
-      <div class="grid">
+      <div class="grid grid--campaigns">
         {campaigns.map((c) => (
-          <a class="card" href={withBase(`/${c.id}/`)} data-theme={c.data.theme}>
+          <a class="card card--campaign" href={withBase(`/${c.id}/`)} data-theme={c.data.theme}>
             <div class="card__cover-wrap">
               <span class="card__cover-emoji" aria-hidden="true">
                 {c.data.emoji}

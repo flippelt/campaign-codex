@@ -3,9 +3,12 @@
 // text in that family, so shipping all themes' faces is cheap. Each theme in
 // src/styles/themes.css references one of these families in --font/--font-head.
 
-// Fantasy — engraved caps + classic book serif
+// Fantasy — engraved caps + flourished display + classic book serif
+import '@fontsource/cinzel/400.css'
 import '@fontsource/cinzel/700.css'
+import '@fontsource/cinzel-decorative/700.css'
 import '@fontsource/eb-garamond/400.css'
+import '@fontsource/eb-garamond/400-italic.css'
 import '@fontsource/eb-garamond/700.css'
 
 // Sci-Fi — geometric techno display + humanist sans body

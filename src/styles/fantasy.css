@@ -1,0 +1,404 @@
+/* Fantasy as an open book: leather binding (chrome) + a paper leaf (main).
+   No plaques, no inner gold frames, no hover that "turns the lights on". */
+
+html[data-theme='fantasy'] body {
+  font-size: 1.085rem;
+  line-height: 1.7;
+  background-image: none;
+  background-color: var(--bg);
+}
+
+html[data-theme='fantasy'] h1,
+html[data-theme='fantasy'] h2,
+html[data-theme='fantasy'] h3,
+html[data-theme='fantasy'] h4 {
+  letter-spacing: 0.04em;
+  font-weight: 400;
+}
+
+html[data-theme='fantasy'] a:hover {
+  text-underline-offset: 3px;
+}
+
+/* Binding / desk */
+html[data-theme='fantasy'] .topbar {
+  background: var(--surface);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 1px solid var(--border);
+}
+
+html[data-theme='fantasy'] .topbar__brand {
+  font-family: var(--font-head);
+  letter-spacing: 0.1em;
+  font-weight: 400;
+}
+
+html[data-theme='fantasy'] .campaign-switch > summary,
+html[data-theme='fantasy'] .hamburger,
+html[data-theme='fantasy'] .mode-toggle,
+html[data-theme='fantasy'] .filter,
+html[data-theme='fantasy'] .campaign-menu {
+  border-radius: 2px;
+}
+
+html[data-theme='fantasy'] .sidebar {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  box-shadow: inset -10px 0 16px -16px rgba(0, 0, 0, 0.55);
+}
+
+html[data-theme='fantasy'] .sidebar__title,
+html[data-theme='fantasy'] .toc__title,
+html[data-theme='fantasy'] .backlinks__title,
+html[data-theme='fantasy'] .prevnext__dir {
+  font-family: var(--font-head);
+  font-size: 0.68rem;
+  letter-spacing: 0.18em;
+}
+
+html[data-theme='fantasy'] .navlink {
+  border-radius: 2px;
+}
+
+html[data-theme='fantasy'] .navlink[aria-current='page'] {
+  box-shadow: none;
+  border: none;
+  background: transparent;
+  color: var(--accent);
+}
+
+html[data-theme='fantasy'] .navlink__count {
+  border-radius: 2px;
+  background: transparent;
+}
+
+/* The open leaf fills the column; type stays on the left, like a verso. */
+html[data-theme='fantasy'] .main {
+  max-width: none;
+  background: var(--page);
+  box-shadow: inset 14px 0 18px -18px rgba(0, 0, 0, 0.55);
+  min-height: calc(100vh - 62px);
+}
+
+html[data-theme='fantasy'] .shell--nosidebar .main {
+  box-shadow:
+    0 1px 0 color-mix(in srgb, var(--border) 80%, transparent),
+    0 18px 40px rgba(0, 0, 0, 0.18);
+  margin-block: 28px;
+  padding-block: 36px;
+}
+
+/* Title is type on the page, not a banner */
+html[data-theme='fantasy'] .masthead {
+  text-align: left;
+  max-width: 42rem;
+}
+
+html[data-theme='fantasy'] .masthead__kicker {
+  font-family: var(--font-head);
+  letter-spacing: 0.22em;
+}
+
+html[data-theme='fantasy'] .masthead h1,
+html[data-theme='fantasy'] .hero__title,
+html[data-theme='fantasy'] .page-head h1 {
+  font-family: var(--font-head);
+  font-weight: 400;
+  letter-spacing: 0.08em;
+  background-image: none;
+  padding-bottom: 0;
+  text-shadow: none;
+  text-transform: none;
+}
+
+html[data-theme='fantasy'] .masthead::after,
+html[data-theme='fantasy'] .page-head::after,
+html[data-theme='fantasy'] .hero__title::after {
+  content: '';
+  display: block;
+  width: 3.5rem;
+  height: 1px;
+  margin: 16px 0 0;
+  background: color-mix(in srgb, var(--accent) 70%, var(--border));
+}
+
+html[data-theme='fantasy'] .grid--campaigns {
+  justify-content: flex-start;
+}
+
+/* Opening of the campaign: left-aligned, bigger — the page's main event. */
+html[data-theme='fantasy'] .frontispiece {
+  max-width: 44rem;
+  margin: 0.25rem 0 3rem;
+}
+
+html[data-theme='fantasy'] .hero,
+html[data-theme='fantasy'] .hero:not(.hero--has-cover) {
+  min-height: 0;
+  background: none;
+  border: none;
+  border-bottom: none;
+  border-radius: 0;
+  box-shadow: none;
+  margin-bottom: 1.5rem;
+}
+
+html[data-theme='fantasy'] .hero:not(.hero--has-cover)::before,
+html[data-theme='fantasy'] .hero::after,
+html[data-theme='fantasy'] .hero:not(.hero--has-cover) .hero__overlay {
+  display: none;
+}
+
+html[data-theme='fantasy'] .hero__body {
+  align-items: flex-start;
+  text-align: left;
+  justify-content: flex-start;
+  padding: 10px 0 6px;
+}
+
+html[data-theme='fantasy'] .hero__emoji {
+  font-size: 1.85rem;
+}
+
+html[data-theme='fantasy'] .hero__title {
+  font-size: clamp(2.5rem, 5.4vw, 3.6rem);
+  line-height: 1.12;
+}
+
+html[data-theme='fantasy'] .hero__chips {
+  justify-content: flex-start;
+}
+
+html[data-theme='fantasy'] .hero__summary {
+  max-width: 42rem;
+  margin: 0;
+  font-size: 1.18rem;
+  line-height: 1.55;
+  color: var(--muted);
+}
+
+html[data-theme='fantasy'] .frontispiece .prose {
+  margin: 0;
+  font-size: 1.2rem;
+  line-height: 1.82;
+}
+
+html[data-theme='fantasy'] .frontispiece .prose > p:first-of-type {
+  font-size: 1.14em;
+}
+
+html[data-theme='fantasy'] .frontispiece .prose > p:first-of-type::first-letter {
+  font-size: 3.7em;
+  line-height: 0.76;
+  padding: 0.04em 0.12em 0 0;
+}
+
+html[data-theme='fantasy'] .catalog {
+  max-width: none;
+  margin-inline: 0;
+}
+
+html[data-theme='fantasy'] .hero--has-cover {
+  min-height: 220px;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+}
+
+html[data-theme='fantasy'] .hero--has-cover::after {
+  display: none;
+}
+
+html[data-theme='fantasy'] .catalog__head {
+  border-bottom-color: var(--border);
+}
+
+html[data-theme='fantasy'] .catalog__head h2 {
+  letter-spacing: 0.1em;
+}
+
+/* Index cards: one hairline, no inner frame, hover does not gild */
+html[data-theme='fantasy'] .card:not([data-theme]),
+.card[data-theme='fantasy'] {
+  outline: none;
+  border: 1px solid var(--border);
+  border-radius: 2px;
+  box-shadow: none;
+  background: color-mix(in srgb, var(--page) 70%, var(--surface));
+}
+
+html[data-theme='fantasy'] .card:not([data-theme]):hover,
+.card[data-theme='fantasy']:hover {
+  transform: none;
+  outline: none;
+  border-color: var(--border);
+  box-shadow: none;
+  background: var(--surface-2);
+}
+
+html[data-theme='fantasy']
+  .card:not([data-theme])
+  .card__cover-wrap:not(:has(> .card__cover))::before,
+.card[data-theme='fantasy'] .card__cover-wrap:not(:has(> .card__cover))::before {
+  opacity: 0.35;
+}
+
+html[data-theme='fantasy'] .card:not([data-theme]) .card__type,
+.card[data-theme='fantasy'] .card__type {
+  border-radius: 2px;
+  font-family: var(--font-head);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  backdrop-filter: none;
+  background: var(--page);
+}
+
+html[data-theme='fantasy'] .hero .chip,
+html[data-theme='fantasy'] .aside .chip,
+html[data-theme='fantasy'] .search-hit .chip,
+html[data-theme='fantasy'] .tag-cloud__tag,
+html[data-theme='fantasy'] .card:not([data-theme]) .chip,
+.card[data-theme='fantasy'] .chip,
+.tcard[data-theme='fantasy'] .tchip {
+  border-radius: 2px;
+  font-family: var(--font-head);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  font-variant: small-caps;
+  font-variant-caps: small-caps;
+}
+
+html[data-theme='fantasy'] .filter {
+  max-width: 460px;
+  box-shadow: none;
+}
+
+html[data-theme='fantasy'] .aside,
+html[data-theme='fantasy'] .timeline__link,
+html[data-theme='fantasy'] .search-hit__link,
+html[data-theme='fantasy'] .prevnext__link {
+  border-radius: 2px;
+  box-shadow: none;
+  background: color-mix(in srgb, var(--page) 60%, var(--surface));
+}
+
+html[data-theme='fantasy'] .timeline__link:hover,
+html[data-theme='fantasy'] .search-hit__link:hover,
+html[data-theme='fantasy'] .prevnext__link:hover {
+  transform: none;
+  box-shadow: none;
+  border-color: var(--border);
+}
+
+html[data-theme='fantasy'] .timeline__year {
+  font-family: var(--font-head);
+  letter-spacing: 0.1em;
+}
+
+html[data-theme='fantasy'] .timeline__list {
+  border-left-color: var(--border);
+}
+
+html[data-theme='fantasy'] .timeline__dot {
+  border-radius: 1px;
+  transform: rotate(45deg);
+  width: 8px;
+  height: 8px;
+  background: var(--accent-2);
+}
+
+/* Book prose */
+html[data-theme='fantasy'] .prose {
+  font-size: 1.125rem;
+  line-height: 1.8;
+  max-width: 62ch;
+}
+
+html[data-theme='fantasy'] .prose > p:first-of-type {
+  font-size: 1.08em;
+}
+
+html[data-theme='fantasy'] .prose > p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  float: left;
+  font-size: 3.2em;
+  line-height: 0.8;
+  padding: 0.06em 0.1em 0 0;
+  color: var(--accent-2);
+  font-weight: 700;
+}
+
+html[data-theme='fantasy'] .prose h2 {
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  border-bottom-color: var(--border);
+}
+
+html[data-theme='fantasy'] .prose blockquote {
+  border-left: 2px solid var(--accent-2);
+  font-style: italic;
+  background: transparent;
+  padding-left: 1em;
+}
+
+html[data-theme='fantasy'] .prose hr {
+  border: none;
+  height: 1px;
+  margin: 2.2em 0;
+  max-width: 4rem;
+  background: var(--border);
+}
+
+html[data-theme='fantasy'] .prose a {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 40%, transparent);
+  text-underline-offset: 3px;
+}
+
+html[data-theme='fantasy'] .callout {
+  border-radius: 2px;
+}
+
+html[data-theme='fantasy'] .foot {
+  letter-spacing: 0.06em;
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+  background: var(--bg);
+}
+
+.tcard[data-theme='fantasy'] {
+  border-radius: 2px;
+  outline: none;
+  background: var(--page);
+}
+
+.tcard[data-theme='fantasy'] .tcard__title {
+  font-family: var(--font-head);
+  font-weight: 400;
+  letter-spacing: 0.06em;
+}
+
+.tcard[data-theme='fantasy'] .tbtn {
+  border-radius: 2px;
+}
+
+@media print {
+  html[data-theme='fantasy'] .main {
+    background: #fff;
+    box-shadow: none;
+  }
+  html[data-theme='fantasy'] .masthead::after,
+  html[data-theme='fantasy'] .page-head::after,
+  html[data-theme='fantasy'] .hero__title::after {
+    display: none;
+  }
+}
+
+@media (max-width: 860px) {
+  html[data-theme='fantasy'] .main {
+    box-shadow: none;
+    min-height: 0;
+  }
+}

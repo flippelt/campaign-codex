@@ -71,13 +71,20 @@ const pangram = 'A ágil raposa marrom salta sobre o cão. Ãàâ çéê íõ ó
     border: 1px solid var(--border);
     border-radius: var(--radius);
     overflow: hidden;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.18);
+    box-shadow: var(--shadow);
   }
   .tcard__bar {
     display: flex;
     align-items: center;
     padding: 10px 14px;
     background: var(--surface);
+    background-image:
+      radial-gradient(
+        ellipse at 0% 50%,
+        color-mix(in srgb, var(--accent) 22%, transparent),
+        transparent 60%
+      ),
+      var(--motif);
     border-bottom: 1px solid var(--border);
   }
   .tcard__brand {
