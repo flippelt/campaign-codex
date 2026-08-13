@@ -3,6 +3,7 @@ import { render } from 'astro:content'
 import BaseLayout from '../../layouts/BaseLayout.astro'
 import EntryCard from '../../components/EntryCard.astro'
 import Art from '../../components/Art.astro'
+import Icon from '../../components/Icon.astro'
 import {
   getCampaigns,
   getCampaign,
@@ -90,7 +91,7 @@ const hasCover = !!campaign.data.coverArt || !!campaign.data.cover
         <section class="catalog">
           <header class="catalog__head">
             <h2>
-              <span>{TYPES[key].emoji}</span> {TYPES[key].label}
+              <Icon name={TYPES[key].icon} /> {TYPES[key].label}
             </h2>
             <a class="catalog__more" href={withBase(`/${id}/${key}/`)}>
               ver todos ({counts[key]}) →

@@ -9,6 +9,7 @@ import {
   type Entry
 } from '../lib/codex'
 import Art from './Art.astro'
+import Icon from './Icon.astro'
 
 interface Props {
   entry: Entry
@@ -29,10 +30,10 @@ const haystack = [title, summary, status, faction, role, ...tags]
 // height regardless of how richly the frontmatter is filled in.
 const allMeta = [
   status && { label: status },
-  role && { label: role, emoji: '🎖️' },
-  faction && { label: faction, emoji: '🏴' },
-  date && { label: date, emoji: '🕑' }
-].filter(Boolean) as { label: string; emoji?: string }[]
+  role && { label: role, icon: 'medal' as const },
+  faction && { label: faction, icon: 'flag' as const },
+  date && { label: date, icon: 'clock' as const }
+].filter(Boolean) as { label: string; icon?: string }[]
 const visibleMeta = allMeta.slice(0, 2)
 const overflowCount = allMeta.length - visibleMeta.length
 ---
@@ -54,16 +55,19 @@ const overflowCount = allMeta.length - visibleMeta.length
         />
       ) : image ? (
         <img class="card__cover" src={asset(image)} alt="" loading="lazy" />
-      ) : (
+      ) : emoji ? (
         <span class="card__cover-emoji" aria-hidden="true">
-          {emoji ?? typeMeta?.emoji ?? '📄'}
+          {emoji}
         </span>
+      ) : (
+        <Icon name={typeMeta?.icon ?? 'file'} class="icon card__cover-icon" />
       )
     }
     {
       typeMeta && (
         <span class="card__type">
-          {typeMeta.emoji} {typeMeta.singular}
+          <Icon name={typeMeta.icon} class="icon card__type-icon" />
+          {typeMeta.singular}
         </span>
       )
     }
@@ -83,7 +87,7 @@ const overflowCount = allMeta.length - visibleMeta.length
         <div class="chips card__chips">
           {visibleMeta.map((m) => (
             <span class="chip">
-              {m.emoji ? `${m.emoji} ` : ''}
+              {m.icon && <Icon name={m.icon} class="icon chip__icon" />}
               {m.label}
             </span>
           ))}

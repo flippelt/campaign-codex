@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 import EntryCard from '../../../components/EntryCard.astro'
+import Icon from '../../../components/Icon.astro'
 import {
   getCampaigns,
   getCampaign,
@@ -55,7 +56,7 @@ const entries = await getEntriesByTag(id!, slug!)
     <a href={withBase(`/${id}/tags/`)}>Tags</a> › #{tagLabel}
   </p>
   <div class="page-head">
-    <h1>🏷️ #{tagLabel}</h1>
+    <h1><Icon name="tag" /> #{tagLabel}</h1>
     <p>{entries.length} {entries.length === 1 ? 'entrada' : 'entradas'}</p>
   </div>
 

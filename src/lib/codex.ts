@@ -5,11 +5,11 @@ export type Entry = CollectionEntry<'entries'>
 
 // Content types. The key is also the folder name under entries/<campaign>/.
 export const TYPES = {
-  lore: { label: 'Lore & História', emoji: '📜', singular: 'lore' },
-  npcs: { label: 'NPCs', emoji: '🧠', singular: 'NPC' },
-  characters: { label: 'Personagens', emoji: '🎭', singular: 'personagem' },
-  events: { label: 'Acontecimentos', emoji: '⚡', singular: 'evento' },
-  maps: { label: 'Mapas & Locais', emoji: '🗺️', singular: 'mapa' }
+  lore: { label: 'Lore & História', emoji: '📜', icon: 'scroll', singular: 'lore' },
+  npcs: { label: 'NPCs', emoji: '🧠', icon: 'person', singular: 'NPC' },
+  characters: { label: 'Personagens', emoji: '🎭', icon: 'masks', singular: 'personagem' },
+  events: { label: 'Acontecimentos', emoji: '⚡', icon: 'bolt', singular: 'evento' },
+  maps: { label: 'Mapas & Locais', emoji: '🗺️', icon: 'map', singular: 'mapa' }
 } as const
 
 export type TypeKey = keyof typeof TYPES

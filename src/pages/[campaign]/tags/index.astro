@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro'
+import Icon from '../../../components/Icon.astro'
 import { getCampaigns, getCampaign, getTags, typeCounts, withBase } from '../../../lib/codex'
 
 export async function getStaticPaths() {
@@ -41,7 +42,7 @@ const sizeFor = (n: number) => {
     <a href={withBase(`/${id}/`)}>{campaign.data.emoji} {campaign.data.name}</a> › Tags
   </p>
   <div class="page-head">
-    <h1>🏷️ Tags</h1>
+    <h1><Icon name="tag" /> Tags</h1>
     <p>{tags.length} {tags.length === 1 ? 'tag' : 'tags'} nesta campanha</p>
   </div>
 
