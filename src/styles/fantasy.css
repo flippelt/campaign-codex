@@ -73,8 +73,9 @@ html[data-theme='fantasy'] .navlink__count {
   background: transparent;
 }
 
-/* The open leaf */
+/* The open leaf — fill the spread so the text can sit in the middle. */
 html[data-theme='fantasy'] .main {
+  max-width: none;
   background: var(--page);
   box-shadow: inset 14px 0 18px -18px rgba(0, 0, 0, 0.55);
   min-height: calc(100vh - 62px);
@@ -90,8 +91,9 @@ html[data-theme='fantasy'] .shell--nosidebar .main {
 
 /* Title is type on the page, not a banner */
 html[data-theme='fantasy'] .masthead {
-  text-align: left;
+  text-align: center;
   max-width: 40rem;
+  margin-inline: auto;
 }
 
 html[data-theme='fantasy'] .masthead__kicker {
@@ -118,12 +120,22 @@ html[data-theme='fantasy'] .hero__title::after {
   display: block;
   width: 3.25rem;
   height: 1px;
-  margin: 12px 0 0;
+  margin: 14px auto 0;
   background: color-mix(in srgb, var(--accent) 70%, var(--border));
 }
 
+html[data-theme='fantasy'] .page-head::after {
+  margin-left: 0;
+}
+
 html[data-theme='fantasy'] .grid--campaigns {
-  justify-content: flex-start;
+  justify-content: center;
+}
+
+/* Frontispiece: title + opening sit in the middle of the leaf. */
+html[data-theme='fantasy'] .frontispiece {
+  max-width: 40rem;
+  margin: 1.25rem auto 2.75rem;
 }
 
 html[data-theme='fantasy'] .hero,
@@ -131,10 +143,10 @@ html[data-theme='fantasy'] .hero:not(.hero--has-cover) {
   min-height: 0;
   background: none;
   border: none;
-  border-bottom: 1px solid var(--border);
+  border-bottom: none;
   border-radius: 0;
   box-shadow: none;
-  margin-bottom: 1.75rem;
+  margin-bottom: 1.5rem;
 }
 
 html[data-theme='fantasy'] .hero:not(.hero--has-cover)::before,
@@ -144,27 +156,37 @@ html[data-theme='fantasy'] .hero:not(.hero--has-cover) .hero__overlay {
 }
 
 html[data-theme='fantasy'] .hero__body {
-  align-items: flex-start;
-  text-align: left;
+  align-items: center;
+  text-align: center;
   justify-content: flex-start;
-  padding: 4px 0 22px;
+  padding: 8px 0 8px;
 }
 
 html[data-theme='fantasy'] .hero__emoji {
-  font-size: 1.6rem;
+  font-size: 1.7rem;
 }
 
 html[data-theme='fantasy'] .hero__title {
-  font-size: clamp(1.8rem, 3.6vw, 2.5rem);
+  font-size: clamp(2rem, 4.2vw, 2.85rem);
 }
 
 html[data-theme='fantasy'] .hero__chips {
-  justify-content: flex-start;
+  justify-content: center;
 }
 
 html[data-theme='fantasy'] .hero__summary {
-  max-width: 62ch;
+  max-width: 38rem;
+  margin-inline: auto;
   color: var(--muted);
+}
+
+html[data-theme='fantasy'] .frontispiece .prose {
+  margin-inline: auto;
+}
+
+html[data-theme='fantasy'] .catalog {
+  max-width: 72rem;
+  margin-inline: auto;
 }
 
 html[data-theme='fantasy'] .hero--has-cover {
