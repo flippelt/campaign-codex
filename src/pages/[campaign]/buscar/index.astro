@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro'
+import Icon from '../../../components/Icon.astro'
 import { getCampaigns, getCampaign, typeCounts, withBase } from '../../../lib/codex'
 
 export async function getStaticPaths() {
@@ -33,7 +34,7 @@ const indexUrl = withBase(`/${id}/search.json`)
     <a href={withBase(`/${id}/`)}>{campaign.data.emoji} {campaign.data.name}</a> › Buscar
   </p>
   <div class="page-head">
-    <h1>🔎 Buscar em {campaign.data.name}</h1>
+    <h1><Icon name="search" /> Buscar em {campaign.data.name}</h1>
     <p>Pesquise por título, resumo, tags ou texto da entrada.</p>
   </div>
 

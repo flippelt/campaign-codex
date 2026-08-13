@@ -1,5 +1,6 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro'
+import Icon from '../../components/Icon.astro'
 import { getCampaigns, withBase } from '../../lib/codex'
 
 const campaigns = await getCampaigns()
@@ -8,7 +9,7 @@ const indexUrl = withBase('/search.json')
 
 <BaseLayout title="Buscar · Campaign Codex" campaigns={campaigns}>
   <div class="page-head">
-    <h1>🔎 Buscar em todas as campanhas</h1>
+    <h1><Icon name="search" /> Buscar em todas as campanhas</h1>
     <p>
       Pesquise em todas as suas campanhas. <kbd>Ctrl</kbd>/<kbd>⌘</kbd>+<kbd>K</kbd> abre esta página
       de qualquer lugar.

@@ -1,5 +1,6 @@
 ---
 import { TYPES, TYPE_KEYS, withBase } from '../lib/codex'
+import Icon from './Icon.astro'
 
 interface Props {
   campaignId: string
@@ -31,7 +32,7 @@ const { campaignId, campaignName, emoji, counts, active } = Astro.props
         href={withBase(`/${campaignId}/${key}/`)}
         aria-current={active === key ? 'page' : undefined}
       >
-        <span class="navlink__emoji">{TYPES[key].emoji}</span>
+        <Icon name={TYPES[key].icon} class="icon navlink__icon" />
         <span>{TYPES[key].label}</span>
         <span class="navlink__count">{counts[key] ?? 0}</span>
       </a>
@@ -44,7 +45,7 @@ const { campaignId, campaignName, emoji, counts, active } = Astro.props
     href={withBase(`/${campaignId}/buscar/`)}
     aria-current={active === 'search' ? 'page' : undefined}
   >
-    <span class="navlink__emoji">🔎</span>
+    <Icon name="search" class="icon navlink__icon" />
     <span>Buscar</span>
   </a>
   <a
@@ -52,7 +53,7 @@ const { campaignId, campaignName, emoji, counts, active } = Astro.props
     href={withBase(`/${campaignId}/tags/`)}
     aria-current={active === 'tags' ? 'page' : undefined}
   >
-    <span class="navlink__emoji">🏷️</span>
+    <Icon name="tag" class="icon navlink__icon" />
     <span>Tags</span>
   </a>
   <a
@@ -60,7 +61,7 @@ const { campaignId, campaignName, emoji, counts, active } = Astro.props
     href={withBase(`/${campaignId}/linha-do-tempo/`)}
     aria-current={active === 'timeline' ? 'page' : undefined}
   >
-    <span class="navlink__emoji">🕑</span>
+    <Icon name="clock" class="icon navlink__icon" />
     <span>Linha do Tempo</span>
   </a>
 </nav>

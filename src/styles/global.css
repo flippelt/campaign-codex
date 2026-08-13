@@ -144,6 +144,14 @@ img {
   z-index: 20;
 }
 
+.icon {
+  width: 1.15em;
+  height: 1.15em;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: -0.18em;
+}
+
 .topbar__brand {
   font-family: var(--font-head);
   font-weight: 700;
@@ -152,6 +160,10 @@ img {
   display: flex;
   align-items: center;
   gap: 8px;
+}
+.topbar__brand .icon {
+  width: 1.2rem;
+  height: 1.2rem;
 }
 
 .topbar__spacer {
@@ -191,10 +203,18 @@ img {
 .campaign-switch__label {
   overflow: hidden;
   text-overflow: ellipsis;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
 }
 .campaign-switch__caret {
   color: var(--muted);
+  display: inline-flex;
   transition: transform 0.15s ease;
+}
+.campaign-switch__caret .icon {
+  width: 0.95rem;
+  height: 0.95rem;
 }
 .campaign-switch[open] .campaign-switch__caret {
   transform: rotate(180deg);
@@ -241,6 +261,14 @@ img {
   font-size: 1.1rem;
   cursor: pointer;
   transition: border-color 0.15s ease;
+  align-items: center;
+  justify-content: center;
+}
+.hamburger .icon,
+.mode-toggle .icon,
+.lightbox__close .icon {
+  width: 1.15rem;
+  height: 1.15rem;
 }
 .hamburger:hover {
   border-color: var(--accent);
@@ -317,6 +345,10 @@ img {
 .navlink__emoji {
   font-size: 1.15rem;
   line-height: 1;
+}
+.navlink__icon {
+  width: 1.15rem;
+  height: 1.15rem;
 }
 .navlink__count {
   margin-left: auto;
@@ -638,6 +670,9 @@ img {
   position: absolute;
   top: 8px;
   left: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 0.7rem;
   padding: 2px 8px;
   border-radius: 999px;
@@ -645,6 +680,16 @@ img {
   color: var(--accent);
   border: 1px solid color-mix(in srgb, var(--accent) 45%, var(--border));
   backdrop-filter: blur(4px);
+}
+.card__type-icon {
+  width: 0.85em;
+  height: 0.85em;
+}
+.card__cover-icon {
+  width: 2.4rem;
+  height: 2.4rem;
+  opacity: 0.55;
+  color: var(--accent);
 }
 .card__body {
   padding: 14px 16px 16px;
@@ -683,12 +728,19 @@ img {
   margin-top: 10px;
 }
 .chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
   font-size: 0.74rem;
   padding: 2px 9px;
   border-radius: 999px;
   background: var(--surface-2);
   color: var(--muted);
   border: 1px solid var(--border);
+}
+.chip__icon {
+  width: 0.85em;
+  height: 0.85em;
 }
 .chip--accent {
   color: var(--accent);
@@ -1257,6 +1309,11 @@ mark {
   gap: 10px;
   font-size: 1.35rem;
 }
+.catalog__head h2 .icon,
+.page-head h1 .icon {
+  width: 0.9em;
+  height: 0.9em;
+}
 .catalog__more {
   margin-left: auto;
   font-size: 0.85rem;
@@ -1292,7 +1349,7 @@ mark {
     grid-template-areas: 'topbar' 'main';
   }
   .hamburger {
-    display: block;
+    display: inline-flex;
   }
   .sidebar {
     position: fixed;

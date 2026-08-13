@@ -3,6 +3,7 @@ import '../styles/global.css'
 import '../lib/fonts'
 import { ClientRouter } from 'astro:transitions'
 import Nav from '../components/Nav.astro'
+import Icon from '../components/Icon.astro'
 import { withBase, type Campaign } from '../lib/codex'
 
 interface SidebarData {
@@ -100,12 +101,12 @@ const ogImageUrl = new URL(withBase(`/og/${ogKey ?? 'index'}.png`), Astro.site ?
               aria-controls="sidebar"
               aria-expanded="false"
             >
-              ☰
+              <Icon name="menu" />
             </button>
           )
         }
         <a class="topbar__brand" href={withBase('/')}
-          >📚 <span class="topbar__brand-text">Campaign Codex</span></a
+          ><Icon name="book" /><span class="topbar__brand-text">Campaign Codex</span></a
         >
         <span class="topbar__spacer"></span>
         <button
@@ -115,21 +116,25 @@ const ogImageUrl = new URL(withBase(`/og/${ogKey ?? 'index'}.png`), Astro.site ?
           aria-label="Alternar tema claro/escuro"
           title="Alternar tema (auto/claro/escuro)"
         >
-          <span class="mode-toggle__icon" data-mode-auto>🌓</span>
-          <span class="mode-toggle__icon" data-mode-light hidden>☀️</span>
-          <span class="mode-toggle__icon" data-mode-dark hidden>🌙</span>
+          <span class="mode-toggle__icon" data-mode-auto><Icon name="circle-half" /></span>
+          <span class="mode-toggle__icon" data-mode-light hidden><Icon name="sun" /></span>
+          <span class="mode-toggle__icon" data-mode-dark hidden><Icon name="moon" /></span>
         </button>
         {
           campaigns.length > 0 && (
             <details class="campaign-switch" id="campaignSwitch">
               <summary aria-label="Trocar de campanha">
                 <span class="campaign-switch__label">
-                  {currentCampaign
-                    ? `${currentCampaign.data.emoji} ${currentCampaign.data.name}`
-                    : '📚 Campanhas'}
+                  {currentCampaign ? (
+                    `${currentCampaign.data.emoji} ${currentCampaign.data.name}`
+                  ) : (
+                    <>
+                      <Icon name="book" /> Campanhas
+                    </>
+                  )}
                 </span>
                 <span class="campaign-switch__caret" aria-hidden="true">
-                  ▾
+                  <Icon name="chevron-down" />
                 </span>
               </summary>
               <nav class="campaign-menu">
@@ -184,7 +189,9 @@ const ogImageUrl = new URL(withBase(`/og/${ogKey ?? 'index'}.png`), Astro.site ?
       aria-modal="true"
       aria-label="Imagem ampliada"
     >
-      <button class="lightbox__close" id="lightboxClose" aria-label="Fechar">✕</button>
+      <button class="lightbox__close" id="lightboxClose" aria-label="Fechar">
+        <Icon name="close" />
+      </button>
       <img class="lightbox__img" id="lightboxImg" src="" alt="" />
     </div>
 

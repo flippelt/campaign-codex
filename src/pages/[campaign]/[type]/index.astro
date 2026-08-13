@@ -1,6 +1,7 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro'
 import EntryCard from '../../../components/EntryCard.astro'
+import Icon from '../../../components/Icon.astro'
 import {
   getCampaigns,
   getCampaign,
@@ -46,7 +47,7 @@ const entries = await getEntries(id!, typeKey)
     {meta.label}
   </p>
   <div class="page-head">
-    <h1>{meta.emoji} {meta.label}</h1>
+    <h1><Icon name={meta.icon} /> {meta.label}</h1>
     <p>{entries.length} {entries.length === 1 ? 'entrada' : 'entradas'}</p>
   </div>
 
@@ -65,7 +66,7 @@ const entries = await getEntries(id!, typeKey)
           class="filter"
           type="search"
           id="filter"
-          placeholder={`🔎 filtrar ${meta.label.toLowerCase()}…`}
+          placeholder={`Filtrar ${meta.label.toLowerCase()}…`}
           aria-label="Filtrar"
         />
         <div class={typeKey === 'maps' ? 'grid grid--gallery' : 'grid'} id="entryGrid">
