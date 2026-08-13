@@ -32,11 +32,11 @@ export const THEMES = {
     label: 'Fantasia',
     emoji: '⚔️',
     og: {
-      from: [50, 40, 32],
-      to: [28, 23, 18],
-      border: [227, 179, 65],
-      title: [241, 231, 214],
-      body: [184, 169, 143]
+      from: [44, 33, 26],
+      to: [22, 17, 13],
+      border: [212, 168, 75],
+      title: [240, 228, 206],
+      body: [179, 160, 134]
     }
   },
   'sci-fi': {
@@ -162,11 +162,11 @@ export const THEME_LABELS: Record<string, { label: string; emoji: string }> = TH
 // Default brand card (used for the home page, pages without a theme, or when
 // OG_THEME_COLORS is false). Matches the fantasy/brand look.
 export const OG_DEFAULT: OGPalette = {
-  from: [28, 23, 18],
-  to: [12, 10, 8],
-  border: [227, 179, 65],
-  title: [241, 231, 214],
-  body: [184, 169, 143]
+  from: [22, 17, 13],
+  to: [10, 8, 6],
+  border: [212, 168, 75],
+  title: [240, 228, 206],
+  body: [179, 160, 134]
 }
 
 // Resolve the OG palette for a (possibly undefined) theme id.

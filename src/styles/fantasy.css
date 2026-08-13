@@ -1,0 +1,363 @@
+/* Fantasy skin. Only the illuminated-manuscript / grimoire look lives here.
+   Page chrome keys off html[data-theme='fantasy']. Cards that carry their own
+   data-theme (home campaign tiles, theme gallery) opt in via [data-theme='fantasy']
+   so a sci-fi tile on the home page is not restyled. */
+
+html[data-theme='fantasy'] {
+  --flourish: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 240 18'%3E%3Crect x='6' y='8.2' width='82' height='1.6'/%3E%3Crect x='152' y='8.2' width='82' height='1.6'/%3E%3Cpolygon points='120,2 127,9 120,16 113,9'/%3E%3Ccircle cx='100' cy='9' r='1.5'/%3E%3Ccircle cx='140' cy='9' r='1.5'/%3E%3Cpolygon points='90,6.2 93,9 90,11.8 87,9'/%3E%3Cpolygon points='150,6.2 153,9 150,11.8 147,9'/%3E%3C/svg%3E");
+}
+
+html[data-theme='fantasy'] body {
+  font-size: 1.085rem;
+  line-height: 1.7;
+  background-image:
+    radial-gradient(
+      ellipse at center,
+      transparent 52%,
+      color-mix(in srgb, var(--bg) 55%, #000) 100%
+    ),
+    radial-gradient(
+      ellipse 80% 50% at 50% -8%,
+      color-mix(in srgb, var(--accent) 14%, transparent),
+      transparent 58%
+    ),
+    radial-gradient(
+      ellipse 55% 40% at 100% 100%,
+      color-mix(in srgb, var(--accent-2) 10%, transparent),
+      transparent 55%
+    );
+}
+
+html[data-theme='fantasy'] h1,
+html[data-theme='fantasy'] h2,
+html[data-theme='fantasy'] h3,
+html[data-theme='fantasy'] h4 {
+  letter-spacing: 0.06em;
+  font-weight: 400;
+}
+
+html[data-theme='fantasy'] a:hover {
+  text-decoration-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  text-underline-offset: 3px;
+}
+
+/* ——— Chrome: leather plank, not glass ——— */
+html[data-theme='fantasy'] .topbar {
+  background: var(--surface);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  border-bottom: 2px solid color-mix(in srgb, var(--accent) 42%, var(--border));
+}
+
+html[data-theme='fantasy'] .topbar__brand {
+  font-family: var(--font-display);
+  letter-spacing: 0.08em;
+}
+
+html[data-theme='fantasy'] .campaign-switch > summary,
+html[data-theme='fantasy'] .hamburger,
+html[data-theme='fantasy'] .mode-toggle,
+html[data-theme='fantasy'] .filter {
+  border-radius: 3px;
+}
+
+html[data-theme='fantasy'] .campaign-menu {
+  border-radius: 3px;
+}
+
+html[data-theme='fantasy'] .sidebar {
+  background:
+    linear-gradient(90deg, color-mix(in srgb, #000 10%, transparent), transparent 14px),
+    var(--surface);
+  border-right: 1px solid color-mix(in srgb, var(--accent) 28%, var(--border));
+}
+
+html[data-theme='fantasy'] .sidebar__title,
+html[data-theme='fantasy'] .toc__title,
+html[data-theme='fantasy'] .backlinks__title,
+html[data-theme='fantasy'] .prevnext__dir {
+  font-family: var(--font-head);
+  font-size: 0.68rem;
+  letter-spacing: 0.2em;
+}
+
+html[data-theme='fantasy'] .navlink {
+  border-radius: 3px;
+}
+
+html[data-theme='fantasy'] .navlink[aria-current='page'] {
+  box-shadow: none;
+  border: 1px solid color-mix(in srgb, var(--accent) 40%, var(--border));
+  background: color-mix(in srgb, var(--accent) 12%, var(--surface-2));
+}
+
+html[data-theme='fantasy'] .navlink__count {
+  border-radius: 2px;
+  font-variant-numeric: lining-nums;
+}
+
+/* ——— Title page ——— */
+html[data-theme='fantasy'] .masthead {
+  text-align: center;
+  margin-inline: auto;
+  max-width: 40rem;
+}
+
+html[data-theme='fantasy'] .masthead__kicker {
+  font-family: var(--font-head);
+  letter-spacing: 0.28em;
+}
+
+html[data-theme='fantasy'] .masthead h1,
+html[data-theme='fantasy'] .hero__title {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  background-image: none;
+  padding-bottom: 0;
+}
+
+html[data-theme='fantasy'] .masthead::after,
+html[data-theme='fantasy'] .page-head::after {
+  content: '';
+  display: block;
+  width: min(220px, 72%);
+  height: 16px;
+  margin: 14px auto 0;
+  background-color: var(--accent);
+  -webkit-mask: var(--flourish) center / contain no-repeat;
+  mask: var(--flourish) center / contain no-repeat;
+}
+
+html[data-theme='fantasy'] .page-head h1 {
+  background-image: none;
+  padding-bottom: 0;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+html[data-theme='fantasy'] .grid--campaigns {
+  justify-content: center;
+}
+
+html[data-theme='fantasy'] .hero {
+  min-height: 260px;
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}
+
+html[data-theme='fantasy'] .hero::after {
+  content: '';
+  position: absolute;
+  inset: 12px;
+  z-index: 3;
+  pointer-events: none;
+  border: 1px solid color-mix(in srgb, var(--accent) 42%, transparent);
+  box-shadow: inset 0 0 0 5px color-mix(in srgb, var(--bg) 28%, transparent);
+}
+
+html[data-theme='fantasy'] .hero__body {
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  padding-block: 40px 36px;
+}
+
+html[data-theme='fantasy'] .hero__title::after {
+  content: '';
+  display: block;
+  width: min(200px, 80%);
+  height: 16px;
+  margin: 12px auto 0;
+  background-color: var(--accent);
+  -webkit-mask: var(--flourish) center / contain no-repeat;
+  mask: var(--flourish) center / contain no-repeat;
+}
+
+html[data-theme='fantasy'] .hero__chips {
+  justify-content: center;
+}
+
+html[data-theme='fantasy'] .hero__summary {
+  max-width: 58ch;
+}
+
+html[data-theme='fantasy'] .catalog__head {
+  border-bottom-color: color-mix(in srgb, var(--accent) 30%, var(--border));
+}
+
+html[data-theme='fantasy'] .catalog__head h2 {
+  letter-spacing: 0.1em;
+}
+
+/* ——— Plates, not app cards ——— */
+html[data-theme='fantasy'] .card:not([data-theme]),
+.card[data-theme='fantasy'] {
+  border-radius: 3px;
+  outline: 1px solid color-mix(in srgb, var(--accent) 26%, transparent);
+  outline-offset: -5px;
+}
+
+html[data-theme='fantasy'] .card:not([data-theme]):hover,
+.card[data-theme='fantasy']:hover {
+  transform: none;
+  outline-color: var(--accent);
+  box-shadow: var(--shadow);
+}
+
+html[data-theme='fantasy'] .card:not([data-theme]) .card__type,
+.card[data-theme='fantasy'] .card__type {
+  border-radius: 2px;
+  font-family: var(--font-head);
+  font-size: 0.62rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  backdrop-filter: none;
+}
+
+html[data-theme='fantasy'] .hero .chip,
+html[data-theme='fantasy'] .aside .chip,
+html[data-theme='fantasy'] .search-hit .chip,
+html[data-theme='fantasy'] .tag-cloud__tag,
+html[data-theme='fantasy'] .card:not([data-theme]) .chip,
+.card[data-theme='fantasy'] .chip,
+.tcard[data-theme='fantasy'] .tchip {
+  border-radius: 2px;
+  font-family: var(--font-head);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: lowercase;
+  font-variant: small-caps;
+  font-variant-caps: small-caps;
+}
+
+html[data-theme='fantasy'] .tag-cloud__tag {
+  border-radius: 2px;
+}
+
+html[data-theme='fantasy'] .filter {
+  max-width: 460px;
+  border-radius: 3px;
+  box-shadow: none;
+  border-color: color-mix(in srgb, var(--accent) 28%, var(--border));
+}
+
+html[data-theme='fantasy'] .aside,
+html[data-theme='fantasy'] .timeline__link,
+html[data-theme='fantasy'] .search-hit__link,
+html[data-theme='fantasy'] .prevnext__link {
+  border-radius: 3px;
+}
+
+html[data-theme='fantasy'] .timeline__link:hover {
+  transform: none;
+}
+
+html[data-theme='fantasy'] .timeline__year {
+  font-family: var(--font-display);
+  letter-spacing: 0.12em;
+}
+
+html[data-theme='fantasy'] .timeline__list {
+  border-left-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+}
+
+html[data-theme='fantasy'] .timeline__dot {
+  border-radius: 1px;
+  transform: rotate(45deg);
+  width: 9px;
+  height: 9px;
+}
+
+/* ——— Book prose ——— */
+html[data-theme='fantasy'] .prose {
+  font-size: 1.125rem;
+  line-height: 1.78;
+}
+
+html[data-theme='fantasy'] .prose > p:first-of-type {
+  font-size: 1.12em;
+}
+
+html[data-theme='fantasy'] .prose > p:first-of-type::first-letter {
+  font-family: var(--font-display);
+  float: left;
+  font-size: 3.35em;
+  line-height: 0.78;
+  padding: 0.08em 0.12em 0 0;
+  color: var(--accent-2);
+  font-weight: 700;
+}
+
+html[data-theme='fantasy'] .prose h2 {
+  font-weight: 400;
+  letter-spacing: 0.12em;
+  border-bottom-color: color-mix(in srgb, var(--accent) 28%, var(--border));
+}
+
+html[data-theme='fantasy'] .prose blockquote {
+  border-left-color: var(--accent-2);
+  font-style: italic;
+  background: color-mix(in srgb, var(--accent-2) 6%, var(--surface));
+}
+
+html[data-theme='fantasy'] .prose hr {
+  border: none;
+  height: 16px;
+  margin: 2.2em auto;
+  max-width: 220px;
+  background-color: var(--accent);
+  -webkit-mask: var(--flourish) center / contain no-repeat;
+  mask: var(--flourish) center / contain no-repeat;
+}
+
+html[data-theme='fantasy'] .prose a {
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 45%, transparent);
+  text-underline-offset: 3px;
+}
+
+html[data-theme='fantasy'] .prose a:hover {
+  text-decoration-color: var(--accent);
+}
+
+html[data-theme='fantasy'] .callout {
+  border-radius: 3px;
+}
+
+html[data-theme='fantasy'] .foot {
+  letter-spacing: 0.06em;
+  font-family: var(--font-head);
+  font-size: 0.72rem;
+}
+
+/* Theme gallery: only the fantasy swatch. */
+.tcard[data-theme='fantasy'] {
+  border-radius: 3px;
+  outline: 1px solid color-mix(in srgb, var(--accent) 28%, transparent);
+  outline-offset: -5px;
+}
+
+.tcard[data-theme='fantasy'] .tcard__title {
+  font-family: var(--font-display);
+  letter-spacing: 0.04em;
+}
+
+.tcard[data-theme='fantasy'] .tbtn {
+  border-radius: 3px;
+}
+
+@media print {
+  html[data-theme='fantasy'] .hero::after,
+  html[data-theme='fantasy'] .hero__title::after,
+  html[data-theme='fantasy'] .masthead::after,
+  html[data-theme='fantasy'] .page-head::after {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-theme='fantasy'] .card:not([data-theme]):hover,
+  .card[data-theme='fantasy']:hover {
+    transform: none;
+  }
+}

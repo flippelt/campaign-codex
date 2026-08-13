@@ -40,20 +40,35 @@
   color-scheme: dark;
 }
 
-/* === Fantasy (default / fallback) === */
+/* === Fantasy (default / fallback) — vellum, antique gold, rubric === */
 :root,
 [data-theme='fantasy'] {
-  --bg: light-dark(#f6efe1, #1c1712);
-  --surface: light-dark(#fdf7e7, #261f18);
-  --surface-2: light-dark(#ede1c5, #322820);
-  --text: light-dark(#2a1f12, #f1e7d6);
-  --muted: light-dark(#6b5a3f, #b8a98f);
-  --accent: light-dark(#a87410, #e3b341);
-  --accent-2: light-dark(#486a3e, #6fae6a);
-  --border: light-dark(#d6c9a8, #463829);
+  --bg: light-dark(#f3ead4, #16110d);
+  --surface: light-dark(#faf3e0, #211a14);
+  --surface-2: light-dark(#e8d9b8, #2c221a);
+  --text: light-dark(#2a1c10, #f0e4ce);
+  --muted: light-dark(#6e5740, #b3a086);
+  --accent: light-dark(#8f6110, #d4a84b);
+  --accent-2: light-dark(#8b2e24, #c45a48);
+  --border: light-dark(#d2c19a, #3d2e22);
   --font: 'EB Garamond', var(--serif);
   --font-head: 'Cinzel', var(--serif);
-  --radius: 14px;
+  --font-display: 'Cinzel Decorative', var(--font-head);
+  --radius: 3px;
+  --grain-opacity: light-dark(0.05, 0.06);
+  --shadow: light-dark(0 2px 0 rgba(42, 28, 16, 0.06), 0 10px 28px rgba(0, 0, 0, 0.45));
+  --shadow-hover: light-dark(0 3px 0 rgba(42, 28, 16, 0.1), 0 14px 34px rgba(0, 0, 0, 0.55));
+  --motif:
+    repeating-linear-gradient(
+      45deg,
+      transparent 0 17px,
+      color-mix(in srgb, var(--accent) 14%, transparent) 17px 18px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent 0 17px,
+      color-mix(in srgb, var(--accent) 10%, transparent) 17px 18px
+    );
 }
 
 /* === Sci-Fi === */
