@@ -84,13 +84,15 @@ const hasCover = !!campaign.data.coverArt || !!campaign.data.cover
   {
     sections.map(({ key, entries }) =>
       entries.length > 0 ? (
-        <section style="margin-top:34px">
-          <h2 style="display:flex;align-items:center;gap:10px">
-            <span>{TYPES[key].emoji}</span> {TYPES[key].label}
-            <a style="margin-left:auto;font-size:0.85rem" href={withBase(`/${id}/${key}/`)}>
+        <section class="catalog">
+          <header class="catalog__head">
+            <h2>
+              <span>{TYPES[key].emoji}</span> {TYPES[key].label}
+            </h2>
+            <a class="catalog__more" href={withBase(`/${id}/${key}/`)}>
               ver todos ({counts[key]}) →
             </a>
-          </h2>
+          </header>
           <div class="grid">
             {entries.map((entry) => (
               <EntryCard entry={entry} />
