@@ -64,4 +64,8 @@ const { campaignId, campaignName, emoji, counts, active } = Astro.props
     <Icon name="clock" class="icon navlink__icon" />
     <span>Linha do Tempo</span>
   </a>
+  <a class="navlink" href={withBase(`/recap/?campaign=${encodeURIComponent(campaignId)}`)}>
+    <Icon name="file" class="icon navlink__icon" />
+    <span>Recap</span>
+  </a>
 </nav>

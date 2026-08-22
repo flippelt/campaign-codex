@@ -30,3 +30,4 @@ jobs:
           ls dist/*/rss.xml >/dev/null 2>&1 || (echo "no per-campaign rss.xml"; exit 1)
           test -f dist/search.json || (echo "missing global search.json"; exit 1)
           test -f dist/buscar/index.html || (echo "missing global /buscar/"; exit 1)
+          test -f dist/recap/index.html || (echo "missing /recap/"; exit 1)
