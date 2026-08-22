@@ -1,0 +1,800 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro'
+import Icon from '../components/Icon.astro'
+import { getCampaigns } from '../lib/codex'
+import { TYPES, TYPE_KEYS } from '../lib/recap'
+
+const campaigns = await getCampaigns()
+const campaignOptions = campaigns.map((c) => ({
+  id: c.id,
+  name: c.data.name,
+  emoji: c.data.emoji,
+  theme: c.data.theme
+}))
+---
+
+<BaseLayout
+  title="Recap · Campaign Codex"
+  description="Transforme notas de sessão em arquivos Markdown do Campaign Codex"
+  campaigns={campaigns}
+>
+  <div class="recap" id="recap" data-default-theme="fantasy">
+    <header class="masthead">
+      <p class="masthead__kicker">Ferramenta do mestre</p>
+      <h1>Recap de sessão</h1>
+      <p>
+        Transforme notas pós-sessão em arquivos Markdown do Codex. Nada é gravado neste site — baixe
+        e solte em <code>src/content/entries/…</code>, depois abra um PR.
+      </p>
+    </header>
+
+    <aside class="callout callout--note">
+      <p class="callout__title">📝 Site estático</p>
+      <p>
+        Os arquivos <strong>não</strong> são escritos no disco. Baixe o Markdown e coloque em{' '}
+        <code>src/content/entries/&lt;campanha&gt;/&lt;tipo&gt;/&lt;slug&gt;.md</code>.
+      </p>
+    </aside>
+
+    <script
+      is:inline
+      id="recap-campaigns"
+      type="application/json"
+      set:html={JSON.stringify(campaignOptions).replace(/</g, '\\u003c')}
+    />
+
+    <section class="recap-card" aria-labelledby="recap-campaign-label">
+      <h2 id="recap-campaign-label" class="recap-card__title">Campanha</h2>
+      <div class="recap-row">
+        {
+          campaigns.length > 0 ? (
+            <label class="recap-field">
+              <span>Campanha nesta build</span>
+              <select id="campaignSelect" class="recap-input">
+                <option value="">— outra / nova —</option>
+                {campaigns.map((c) => (
+                  <option value={c.id}>
+                    {c.data.emoji} {c.data.name}
+                  </option>
+                ))}
+              </select>
+            </label>
+          ) : (
+            <p class="empty recap-empty">
+              Nenhuma campanha neste build. Digite o id da pasta abaixo.
+            </p>
+          )
+        }
+        <label class="recap-field">
+          <span>Id da pasta</span>
+          <input
+            id="campaignId"
+            class="recap-input"
+            type="text"
+            placeholder="minha-campanha"
+            autocomplete="off"
+            spellcheck="false"
+          />
+        </label>
+      </div>
+    </section>
+
+    <div class="recap-tabs" role="tablist" aria-label="Modo do recap">
+      <button
+        type="button"
+        class="recap-tab"
+        role="tab"
+        id="tab-single"
+        aria-selected="true"
+        aria-controls="panel-single"
+        data-mode="single">Entrada única</button
+      >
+      <button
+        type="button"
+        class="recap-tab"
+        role="tab"
+        id="tab-session"
+        aria-selected="false"
+        aria-controls="panel-session"
+        data-mode="session">Sessão (várias)</button
+      >
+    </div>
+
+    <section id="panel-single" class="recap-panel" role="tabpanel" aria-labelledby="tab-single">
+      <form id="singleForm" class="recap-split">
+        <div class="recap-form">
+          <label class="recap-field">
+            <span>Tipo</span>
+            <select id="entryType" class="recap-input" name="type">
+              {
+                TYPE_KEYS.map((key) => (
+                  <option value={key} selected={key === 'events' ? true : undefined}>
+                    {TYPES[key].emoji} {TYPES[key].label}
+                  </option>
+                ))
+              }
+            </select>
+          </label>
+          <label class="recap-field">
+            <span>Título</span>
+            <input id="entryTitle" class="recap-input" name="title" required autocomplete="off" />
+          </label>
+          <label class="recap-field">
+            <span>Slug</span>
+            <input
+              id="entrySlug"
+              class="recap-input"
+              name="slug"
+              placeholder="gerado do título"
+              autocomplete="off"
+              spellcheck="false"
+            />
+          </label>
+          <label class="recap-field recap-field--narrow">
+            <span>Emoji</span>
+            <input id="entryEmoji" class="recap-input" name="emoji" value="⚡" autocomplete="off" />
+          </label>
+          <label class="recap-field recap-field--full">
+            <span>Resumo</span>
+            <input id="entrySummary" class="recap-input" name="summary" autocomplete="off" />
+          </label>
+          <label class="recap-field recap-field--full">
+            <span>Tags <span class="recap-hint">(vírgulas)</span></span>
+            <input
+              id="entryTags"
+              class="recap-input"
+              name="tags"
+              placeholder="batalha, fenda"
+              autocomplete="off"
+            />
+          </label>
+          <label class="recap-field">
+            <span>Status</span>
+            <input id="entryStatus" class="recap-input" name="status" placeholder="vivo, ativo…" />
+          </label>
+          <label class="recap-field">
+            <span>Facção</span>
+            <input id="entryFaction" class="recap-input" name="faction" />
+          </label>
+          <label class="recap-field">
+            <span>Papel</span>
+            <input id="entryRole" class="recap-input" name="role" />
+          </label>
+          <label class="recap-field">
+            <span>Local</span>
+            <input id="entryLocation" class="recap-input" name="location" />
+          </label>
+          <label class="recap-field">
+            <span>Data <span class="recap-hint">(no mundo)</span></span>
+            <input
+              id="entryDate"
+              class="recap-input"
+              name="date"
+              placeholder="Inverno do 12º ano"
+            />
+          </label>
+          <label class="recap-field recap-field--narrow">
+            <span>Ordem</span>
+            <input id="entryOrder" class="recap-input" name="order" type="number" value="0" />
+          </label>
+          <label class="recap-check">
+            <input id="entryDraft" type="checkbox" name="draft" />
+            <span>Rascunho</span>
+          </label>
+          <label class="recap-field recap-field--full">
+            <span>Corpo</span>
+            <textarea id="entryBody" class="recap-input recap-input--body" name="body" rows="10"
+            ></textarea>
+          </label>
+        </div>
+        <div class="recap-side">
+          <div class="recap-side__head">
+            <h2>Prévia</h2>
+            <p class="recap-path" id="singlePath"></p>
+          </div>
+          <pre class="recap-preview" id="singlePreview"></pre>
+          <div class="recap-actions">
+            <button type="button" class="recap-btn recap-btn--accent" id="singleCopy">
+              Copiar
+            </button>
+            <button type="button" class="recap-btn" id="singleDownload">
+              <Icon name="file" /> Baixar
+            </button>
+          </div>
+        </div>
+      </form>
+    </section>
+
+    <section
+      id="panel-session"
+      class="recap-panel"
+      role="tabpanel"
+      aria-labelledby="tab-session"
+      hidden
+    >
+      <form id="sessionForm" class="recap-session">
+        <div class="recap-row">
+          <label class="recap-field">
+            <span>Data padrão</span>
+            <input id="sessionDate" class="recap-input" placeholder="Inverno do 12º ano" />
+          </label>
+          <label class="recap-field">
+            <span>Local padrão</span>
+            <input id="sessionLocation" class="recap-input" placeholder="A muralha norte" />
+          </label>
+        </div>
+        <label class="recap-field recap-field--full">
+          <span>Notas da sessão</span>
+          <textarea
+            id="sessionNotes"
+            class="recap-input recap-input--notes"
+            rows="16"
+            placeholder={'Sessão 12 — A muralha\n\nData: Inverno do 12º ano\nLocal: A muralha norte\nTags: batalha, virada\n\nOs jogadores defenderam a muralha a noite inteira.\n\nNPCs:\n- Mestre Corvo: apareceu com um aviso\n- **Capitã** — enviou reforços\n\nPersonagens:\n- Lyra: liderou a retomada\n\nLore:\nA fenda avançou mais um passo.\n\nMapas:\n- A muralha: o trecho leste cedeu'}
+          ></textarea>
+        </label>
+        <div class="recap-actions">
+          <button type="submit" class="recap-btn recap-btn--accent" id="sessionParse">
+            Parsear
+          </button>
+        </div>
+      </form>
+      <p class="recap-status" id="sessionStatus" aria-live="polite"></p>
+      <div id="sessionFiles" class="recap-files"></div>
+    </section>
+
+    <details class="recap-help">
+      <summary>Como as notas são lidas</summary>
+      <ul>
+        <li>A primeira linha curta vira o título do acontecimento da sessão.</li>
+        <li>
+          Linhas <code>Data:</code> / <code>Date:</code> e <code>Local:</code>
+          {' / '}
+          <code>Location:</code> preenchem esses campos.
+        </li>
+        <li>
+          <code>Tags: a, b</code> e hashtags <code>#foo</code> vão para o acontecimento principal.
+        </li>
+        <li>
+          Seções <code>NPCs:</code>, <code>## Personagens</code>, <code>Lore:</code>,{' '}
+          <code>Eventos:</code> / <code>Acontecimentos:</code>, <code>Mapas:</code>
+          {' / '}
+          <code>Locais:</code> (com ou sem <code>#</code>) separam os arquivos.
+        </li>
+        <li>
+          Itens <code>- Nome: texto</code> ou <code>- **Nome** — texto</code> viram um arquivo cada.
+        </li>
+        <li>
+          O texto sem seção vira o recap em <code>events/</code>. Seções vazias são ignoradas.
+        </li>
+      </ul>
+    </details>
+  </div>
+
+  <script>
+    import {
+      TYPES,
+      buildRecapFile,
+      isRecapType,
+      parseSessionNotes,
+      renderEntryMarkdown,
+      slugify,
+      type RecapFile,
+      type RecapType
+    } from '../lib/recap'
+
+    const escapeHtml = (s: string) =>
+      s.replace(
+        /[&<>"']/g,
+        (c) =>
+          ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[c] as string
+      )
+
+    type CampaignOpt = { id: string; name: string; emoji: string; theme: string }
+
+    function readCampaigns(): CampaignOpt[] {
+      const el = document.getElementById('recap-campaigns')
+      if (!el?.textContent) return []
+      try {
+        return JSON.parse(el.textContent) as CampaignOpt[]
+      } catch {
+        return []
+      }
+    }
+
+    function downloadText(filename: string, content: string) {
+      const blob = new Blob([content], { type: 'text/markdown;charset=utf-8' })
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = filename
+      document.body.appendChild(a)
+      a.click()
+      a.remove()
+      URL.revokeObjectURL(url)
+    }
+
+    async function copyText(text: string): Promise<boolean> {
+      try {
+        await navigator.clipboard.writeText(text)
+        return true
+      } catch {
+        return false
+      }
+    }
+
+    function flash(btn: HTMLElement, ok: boolean) {
+      const prev = btn.textContent
+      btn.textContent = ok ? 'Copiado' : 'Falhou'
+      window.setTimeout(() => {
+        btn.textContent = prev
+      }, 1400)
+    }
+
+    function init() {
+      const root = document.getElementById('recap')
+      if (!root || root.dataset.ready === '1') return
+      root.dataset.ready = '1'
+
+      const campaigns = readCampaigns()
+      const campaignById = new Map(campaigns.map((c) => [c.id, c]))
+      const select = document.getElementById('campaignSelect') as HTMLSelectElement | null
+      const campaignId = document.getElementById('campaignId') as HTMLInputElement
+      const defaultTheme = root.dataset.defaultTheme || 'fantasy'
+
+      const applyTheme = (id: string) => {
+        const theme = campaignById.get(id)?.theme || defaultTheme
+        document.documentElement.setAttribute('data-theme', theme)
+      }
+
+      const setCampaign = (id: string) => {
+        campaignId.value = id
+        if (select) select.value = campaignById.has(id) ? id : ''
+        applyTheme(id)
+      }
+
+      const q = new URLSearchParams(location.search).get('campaign')
+      if (q) setCampaign(q)
+      else if (campaigns[0]) setCampaign(campaigns[0].id)
+
+      select?.addEventListener('change', () => {
+        if (select.value) setCampaign(select.value)
+        else applyTheme(campaignId.value)
+      })
+      campaignId.addEventListener('input', () => {
+        const id = campaignId.value.trim()
+        if (select) select.value = campaignById.has(id) ? id : ''
+        applyTheme(id)
+      })
+
+      const tabs = Array.from(root.querySelectorAll<HTMLButtonElement>('[role="tab"]'))
+      const panels: Record<string, HTMLElement | null> = {
+        single: document.getElementById('panel-single'),
+        session: document.getElementById('panel-session')
+      }
+      const setMode = (mode: string) => {
+        for (const tab of tabs) {
+          const on = tab.dataset.mode === mode
+          tab.setAttribute('aria-selected', String(on))
+        }
+        for (const [key, panel] of Object.entries(panels)) {
+          if (panel) panel.hidden = key !== mode
+        }
+      }
+      for (const tab of tabs) {
+        tab.addEventListener('click', () => setMode(tab.dataset.mode || 'single'))
+      }
+
+      const titleEl = document.getElementById('entryTitle') as HTMLInputElement
+      const slugEl = document.getElementById('entrySlug') as HTMLInputElement
+      const typeEl = document.getElementById('entryType') as HTMLSelectElement
+      const emojiEl = document.getElementById('entryEmoji') as HTMLInputElement
+      const summaryEl = document.getElementById('entrySummary') as HTMLInputElement
+      const tagsEl = document.getElementById('entryTags') as HTMLInputElement
+      const statusEl = document.getElementById('entryStatus') as HTMLInputElement
+      const factionEl = document.getElementById('entryFaction') as HTMLInputElement
+      const roleEl = document.getElementById('entryRole') as HTMLInputElement
+      const locationEl = document.getElementById('entryLocation') as HTMLInputElement
+      const dateEl = document.getElementById('entryDate') as HTMLInputElement
+      const orderEl = document.getElementById('entryOrder') as HTMLInputElement
+      const draftEl = document.getElementById('entryDraft') as HTMLInputElement
+      const bodyEl = document.getElementById('entryBody') as HTMLTextAreaElement
+      const previewEl = document.getElementById('singlePreview') as HTMLElement
+      const pathEl = document.getElementById('singlePath') as HTMLElement
+      const copyBtn = document.getElementById('singleCopy') as HTMLButtonElement
+      const downloadBtn = document.getElementById('singleDownload') as HTMLButtonElement
+
+      let slugDirty = false
+      let emojiDirty = false
+      slugEl.addEventListener('input', () => {
+        slugDirty = slugEl.value.trim().length > 0
+      })
+      emojiEl.addEventListener('input', () => {
+        emojiDirty = true
+      })
+
+      const currentType = (): RecapType => (isRecapType(typeEl.value) ? typeEl.value : 'events')
+
+      const currentFile = (): RecapFile => {
+        const type = currentType()
+        const title = titleEl.value.trim() || 'Sem título'
+        const tags = tagsEl.value
+          .split(/[,;]/)
+          .map((t) => t.replace(/^#/, '').trim())
+          .filter(Boolean)
+        const order = Number(orderEl.value)
+        return buildRecapFile({
+          campaign: campaignId.value,
+          type,
+          slug: slugEl.value.trim() || slugify(title),
+          title,
+          emoji: emojiEl.value.trim() || TYPES[type].emoji,
+          summary: summaryEl.value.trim() || undefined,
+          tags,
+          status: statusEl.value.trim() || undefined,
+          faction: factionEl.value.trim() || undefined,
+          role: roleEl.value.trim() || undefined,
+          location: locationEl.value.trim() || undefined,
+          date: dateEl.value.trim() || undefined,
+          order: Number.isFinite(order) ? order : 0,
+          draft: draftEl.checked,
+          body: bodyEl.value
+        })
+      }
+
+      const refreshPreview = () => {
+        if (!slugDirty) slugEl.placeholder = slugify(titleEl.value) || 'gerado do título'
+        const file = currentFile()
+        previewEl.textContent = renderEntryMarkdown(file)
+        pathEl.textContent = file.relativePath
+      }
+
+      typeEl.addEventListener('change', () => {
+        if (!emojiDirty) emojiEl.value = TYPES[currentType()].emoji
+        refreshPreview()
+      })
+      document.getElementById('singleForm')?.addEventListener('input', refreshPreview)
+      campaignId.addEventListener('input', refreshPreview)
+      select?.addEventListener('change', refreshPreview)
+      refreshPreview()
+
+      copyBtn.addEventListener('click', async () => {
+        const ok = await copyText(renderEntryMarkdown(currentFile()))
+        flash(copyBtn, ok)
+      })
+      downloadBtn.addEventListener('click', () => {
+        const file = currentFile()
+        downloadText(`${file.type}-${file.slug}.md`, renderEntryMarkdown(file))
+      })
+
+      const sessionForm = document.getElementById('sessionForm') as HTMLFormElement
+      const notesEl = document.getElementById('sessionNotes') as HTMLTextAreaElement
+      const sessionDate = document.getElementById('sessionDate') as HTMLInputElement
+      const sessionLocation = document.getElementById('sessionLocation') as HTMLInputElement
+      const statusElSession = document.getElementById('sessionStatus') as HTMLElement
+      const filesEl = document.getElementById('sessionFiles') as HTMLElement
+      let parsed: RecapFile[] = []
+
+      const renderFiles = (files: RecapFile[]) => {
+        parsed = files
+        if (files.length === 0) {
+          filesEl.innerHTML = ''
+          statusElSession.textContent =
+            'Nada para gerar — escreva um título, um corpo ou uma seção.'
+          return
+        }
+        statusElSession.textContent = `${files.length} arquivo${files.length === 1 ? '' : 's'} gerado${
+          files.length === 1 ? '' : 's'
+        }. Baixe e solte no caminho indicado.`
+        filesEl.innerHTML = files
+          .map((file, i) => {
+            const md = renderEntryMarkdown(file)
+            const typeMeta = TYPES[file.type]
+            return `<article class="recap-file">
+              <header class="recap-file__head">
+                <span class="chip chip--accent">${escapeHtml(typeMeta.emoji)} ${escapeHtml(
+                  typeMeta.label
+                )}</span>
+                <h3 class="recap-file__title">${escapeHtml(file.title)}</h3>
+                <code class="recap-file__path">${escapeHtml(file.relativePath)}</code>
+              </header>
+              <pre class="recap-preview">${escapeHtml(md)}</pre>
+              <div class="recap-actions">
+                <button type="button" class="recap-btn recap-btn--accent" data-copy="${i}">Copiar</button>
+                <button type="button" class="recap-btn" data-download="${i}">Baixar</button>
+              </div>
+            </article>`
+          })
+          .join('')
+      }
+
+      sessionForm.addEventListener('submit', (e) => {
+        e.preventDefault()
+        const files = parseSessionNotes(notesEl.value, {
+          campaign: campaignId.value,
+          date: sessionDate.value.trim() || undefined,
+          location: sessionLocation.value.trim() || undefined
+        })
+        renderFiles(files)
+      })
+
+      filesEl.addEventListener('click', async (e) => {
+        const btn = (e.target as HTMLElement).closest('button')
+        if (!btn) return
+        const copyIdx = btn.dataset.copy
+        const dlIdx = btn.dataset.download
+        if (copyIdx !== undefined) {
+          const file = parsed[Number(copyIdx)]
+          if (!file) return
+          const ok = await copyText(renderEntryMarkdown(file))
+          flash(btn, ok)
+        }
+        if (dlIdx !== undefined) {
+          const file = parsed[Number(dlIdx)]
+          if (!file) return
+          downloadText(`${file.type}-${file.slug}.md`, renderEntryMarkdown(file))
+        }
+      })
+    }
+
+    init()
+    document.addEventListener('astro:page-load', init)
+  </script>
+</BaseLayout>
+
+<style>
+  .recap {
+    max-width: 68rem;
+  }
+  .recap-card {
+    margin: 0 0 22px;
+    padding: 16px 18px 18px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .recap-card__title {
+    margin: 0 0 12px;
+    font-size: 1.05rem;
+  }
+  .recap-empty {
+    margin: 0 0 8px;
+    grid-column: 1 / -1;
+  }
+  .recap-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  .recap-form {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    align-content: start;
+  }
+  .recap-field {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    font-size: 0.82rem;
+    color: var(--muted);
+  }
+  .recap-field--full {
+    grid-column: 1 / -1;
+  }
+  .recap-field--narrow {
+    max-width: 8rem;
+  }
+  .recap-hint {
+    opacity: 0.7;
+    font-weight: 400;
+  }
+  .recap-check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.92rem;
+    color: var(--text);
+    padding-top: 22px;
+  }
+  .recap-input {
+    width: 100%;
+    padding: 8px 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    color: var(--text);
+    font-family: var(--font);
+    font-size: 0.95rem;
+  }
+  .recap-input:hover {
+    border-color: color-mix(in srgb, var(--accent) 40%, var(--border));
+  }
+  .recap-input:focus {
+    outline: 2px solid var(--accent);
+    border-color: var(--accent);
+  }
+  .recap-input--body,
+  .recap-input--notes {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    line-height: 1.5;
+    min-height: 180px;
+    resize: vertical;
+    border-radius: 12px;
+  }
+  .recap-input--notes {
+    min-height: 280px;
+  }
+  .recap-tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin: 8px 0 18px;
+  }
+  .recap-tab {
+    font-family: var(--font);
+    font-size: 0.9rem;
+    padding: 6px 14px;
+    border-radius: 999px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .recap-tab:hover {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    color: var(--text);
+  }
+  .recap-tab[aria-selected='true'] {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+    font-weight: 600;
+  }
+  .recap-split {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+    align-items: start;
+  }
+  .recap-side {
+    position: sticky;
+    top: 76px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+  }
+  .recap-side__head {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .recap-side__head h2 {
+    margin: 0;
+    font-size: 1.15rem;
+  }
+  .recap-path,
+  .recap :global(.recap-file__path) {
+    font-family: var(--mono);
+    font-size: 0.75rem;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+  }
+  .recap-preview,
+  .recap :global(.recap-preview) {
+    margin: 0;
+    padding: 12px 14px;
+    max-height: 520px;
+    overflow: auto;
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text);
+    font-family: var(--mono);
+    font-size: 0.78rem;
+    line-height: 1.45;
+    white-space: pre-wrap;
+    word-break: break-word;
+  }
+  .recap-actions,
+  .recap :global(.recap-actions) {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .recap-btn,
+  .recap :global(.recap-btn) {
+    font-family: var(--font);
+    cursor: pointer;
+    padding: 7px 14px;
+    border-radius: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface-2);
+    color: var(--text);
+    font-weight: 600;
+    font-size: 0.9rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .recap-btn:hover,
+  .recap :global(.recap-btn:hover) {
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+  }
+  .recap-btn--accent,
+  .recap :global(.recap-btn--accent) {
+    color: var(--accent);
+    border-color: color-mix(in srgb, var(--accent) 45%, var(--border));
+    background: color-mix(in srgb, var(--accent) 16%, var(--surface));
+  }
+  .recap-session {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .recap-status {
+    min-height: 1.4em;
+    color: var(--muted);
+    margin: 8px 0 12px;
+  }
+  .recap-files,
+  .recap :global(.recap-files) {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .recap :global(.recap-file) {
+    padding: 14px 16px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  .recap :global(.recap-file__head) {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .recap :global(.recap-file__title) {
+    margin: 0;
+    font-size: 1.2rem;
+  }
+  .recap-help {
+    margin-top: 32px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--muted);
+  }
+  .recap-help summary {
+    cursor: pointer;
+    color: var(--text);
+    font-weight: 600;
+  }
+  .recap-help ul {
+    margin: 10px 0 0;
+    padding-left: 1.2em;
+  }
+  .recap-help li {
+    margin: 0.35em 0;
+  }
+  @media (max-width: 860px) {
+    .recap-split,
+    .recap-row,
+    .recap-form {
+      grid-template-columns: 1fr;
+    }
+    .recap-side {
+      position: static;
+    }
+    .recap-field--narrow {
+      max-width: none;
+    }
+  }
+</style>
