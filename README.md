@@ -10,6 +10,16 @@ fallout, warhammer), bom suporte a emoji, menu responsivo e manutenção simples
 **Stack:** [Astro](https://astro.build) + content collections. 100% estático,
 sem backend.
 
+**Demo:** <https://flippelt.github.io/campaign-codex/>
+
+## Screenshots
+
+![Tema sci-fi — Incidente Nostromo](docs/screenshots/theme-scifi.png)
+
+![Tema fantasia — Crônicas de Valdoran](docs/screenshots/theme-fantasy.png)
+
+![Cartão do tema Cyberpunk RED](docs/screenshots/theme-cyberpunk.png)
+
 ---
 
 ## Rodando localmente
