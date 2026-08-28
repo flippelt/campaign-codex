@@ -14,11 +14,13 @@ sem backend.
 
 ## Screenshots
 
-![Tema sci-fi — Incidente Nostromo](docs/screenshots/theme-scifi.png)
+Clique para ver em 1080p.
 
-![Tema fantasia — Crônicas de Valdoran](docs/screenshots/theme-fantasy.png)
+[<img src="docs/screenshots/theme-scifi.png" width="720" alt="Tema sci-fi — Incidente Nostromo">](docs/screenshots/theme-scifi.png)
 
-![Cartão do tema Cyberpunk RED](docs/screenshots/theme-cyberpunk.png)
+[<img src="docs/screenshots/theme-fantasy.png" width="720" alt="Tema fantasia — Crônicas de Valdoran">](docs/screenshots/theme-fantasy.png)
+
+[<img src="docs/screenshots/theme-cyberpunk.png" width="720" alt="Galeria de temas (Cyberpunk RED e outros)">](docs/screenshots/theme-cyberpunk.png)
 
 ---
 
