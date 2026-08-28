@@ -110,6 +110,17 @@ npm run build:demo      # base padrão "/"
 BASE=/campaign-codex/ npm run build:demo   # como no Pages
 ```
 
+## Família
+
+| Projeto | Papel |
+|---|---|
+| [session-kit](https://github.com/flippelt/session-kit) | YAML de sessão → entradas deste wiki |
+| [GM Control Room](https://github.com/flippelt/gm-control-room) | painel do mestre (cenas ao vivo) |
+| [Immersive Terminal](https://github.com/flippelt/Immersive-Terminal-for-RPGs) | prop CRT · [demo](https://flippelt.github.io/Immersive-Terminal-for-RPGs/) |
+| [Guild Briefings](https://github.com/flippelt/guild-briefings) | dossiê da party · [demo](https://flippelt.github.io/guild-briefings/) |
+
+A demo pública: https://flippelt.github.io/campaign-codex/
+
 ---
 
 ## Licença
