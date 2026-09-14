@@ -13,14 +13,17 @@
     "format:check": "prettier --check ."
   },
   "dependencies": {
-    "@astrojs/markdown-remark": "7.2.2",
-    "astro": "^7.1.6",
+    "@astrojs/markdown-remark": "^7.3.1",
+    "astro": "^7.3.2",
     "astro-og-canvas": "^0.13.0",
     "canvaskit-wasm": "^0.41.1"
   },
   "overrides": {
     "esbuild": "^0.28.1",
-    "yaml": "^2.8.3"
+    "yaml": "^2.8.3",
+    "js-yaml": "^4.3.2",
+    "svgo": "^4.1.0",
+    "sharp": "^0.35.4"
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.9",

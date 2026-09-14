@@ -6,6 +6,7 @@ import { readdir, readFile } from 'node:fs/promises'
 import path from 'node:path'
 import { defineConfig } from 'astro/config'
 import sitemap from '@astrojs/sitemap'
+import { unified } from '@astrojs/markdown-remark'
 
 // Build-time lint: warn about tags that appear on a single entry. These are
 // usually typos ("magos" vs "mago") that fragment the tag system. Walks the
@@ -330,7 +331,9 @@ export default defineConfig({
   build: { format: 'directory' },
   integrations: [sitemap(), tagLint()],
   markdown: {
-    remarkPlugins: [remarkWikiLinks, remarkCallouts],
-    rehypePlugins: [rehypeHeadingAnchors, rehypeContentLinks]
+    processor: unified({
+      remarkPlugins: [remarkWikiLinks, remarkCallouts],
+      rehypePlugins: [rehypeHeadingAnchors, rehypeContentLinks]
+    })
   }
 })
