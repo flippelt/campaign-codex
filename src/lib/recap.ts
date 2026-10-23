@@ -103,6 +103,23 @@ export function renderEntryMarkdown(entry: RecapEntry): string {
   return `---\n${lines.join('\n')}\n---\n${body ? `\n${body}\n` : ''}`
 }
 
+/**
+ * Which form field each line of the rendered Markdown comes from: the
+ * front-matter key (`title`, `tags`…), `body` after the closing `---`, and
+ * `''` for the fences. Drives the field ↔ preview highlight on /recap/.
+ */
+export function previewLineKeys(markdown: string): string[] {
+  let fences = 0
+  return markdown.split('\n').map((line) => {
+    if (line === '---' && fences < 2) {
+      fences++
+      return ''
+    }
+    if (fences >= 2) return 'body'
+    return /^([a-z]+):/.exec(line)?.[1] ?? ''
+  })
+}
+
 export function buildRecapFile(entry: RecapEntry): RecapFile {
   const campaign = slugify(entry.campaign) || 'campanha'
   const slug = slugify(entry.slug || entry.title) || 'entrada'
