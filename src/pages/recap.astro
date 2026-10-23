@@ -319,6 +319,7 @@ const campaignOptions = campaigns.map((c) => ({
       buildRecapFile,
       isRecapType,
       parseSessionNotes,
+      previewLineKeys,
       renderEntryMarkdown,
       slugify,
       type RecapFile,
@@ -484,18 +485,85 @@ const campaignOptions = campaigns.map((c) => ({
         })
       }
 
+      // Campo ↔ prévia, como o data-edit do opord: o campo em foco acende a
+      // linha dele; clicar numa linha abre o bloco do campo e põe o foco nele.
+      const FIELD_KEY: Record<string, string> = {
+        entryType: 'path',
+        entrySlug: 'path',
+        entryTitle: 'title',
+        entryEmoji: 'emoji',
+        entrySummary: 'summary',
+        entryTags: 'tags',
+        entryStatus: 'status',
+        entryFaction: 'faction',
+        entryRole: 'role',
+        entryLocation: 'location',
+        entryDate: 'date',
+        entryOrder: 'order',
+        entryDraft: 'draft',
+        entryBody: 'body'
+      }
+      let lit = ''
+      const paintLit = () => {
+        previewEl.querySelectorAll<HTMLElement>('[data-key]').forEach((el) => {
+          el.classList.toggle('is-lit', lit !== '' && el.dataset.key === lit)
+        })
+        pathEl.classList.toggle('is-lit', lit === 'path')
+      }
+
       const refreshPreview = () => {
         if (!slugDirty) slugEl.placeholder = slugify(titleEl.value) || 'gerado do título'
         const file = currentFile()
-        previewEl.textContent = renderEntryMarkdown(file)
+        const markdown = renderEntryMarkdown(file)
+        const keys = previewLineKeys(markdown)
+        previewEl.replaceChildren(
+          ...markdown.split('\n').map((line, i) => {
+            const span = document.createElement('span')
+            span.className = 'recap-line'
+            span.textContent = line + '\n'
+            if (keys[i]) span.dataset.key = keys[i]
+            return span
+          })
+        )
         pathEl.textContent = file.relativePath
+        pathEl.dataset.key = 'path'
+        paintLit()
+      }
+
+      const singleForm = document.getElementById('singleForm') as HTMLFormElement
+      singleForm.addEventListener('focusin', (e) => {
+        lit = FIELD_KEY[(e.target as HTMLElement).id] ?? ''
+        paintLit()
+      })
+      singleForm.addEventListener('focusout', (e) => {
+        const into = e.relatedTarget as HTMLElement | null
+        if (into && singleForm.contains(into) && FIELD_KEY[into.id]) return
+        lit = ''
+        paintLit()
+      })
+      const jumpTo = (key: string) => {
+        const id = Object.keys(FIELD_KEY).find(
+          (k) => FIELD_KEY[k] === key && (key !== 'path' || k === 'entrySlug')
+        )
+        const field = id ? document.getElementById(id) : null
+        if (!field) return
+        const block = field.closest('details')
+        if (block) block.open = true
+        field.focus()
+        field.scrollIntoView({ block: 'center', behavior: 'smooth' })
+      }
+      for (const el of [previewEl, pathEl]) {
+        el.addEventListener('click', (e) => {
+          const key = (e.target as HTMLElement).closest<HTMLElement>('[data-key]')?.dataset.key
+          if (key) jumpTo(key)
+        })
       }
 
       typeEl.addEventListener('change', () => {
         if (!emojiDirty) emojiEl.value = TYPES[currentType()].emoji
         refreshPreview()
       })
-      document.getElementById('singleForm')?.addEventListener('input', refreshPreview)
+      singleForm.addEventListener('input', refreshPreview)
       campaignId.addEventListener('input', refreshPreview)
       select?.addEventListener('change', refreshPreview)
       refreshPreview()
@@ -784,6 +852,17 @@ const campaignOptions = campaigns.map((c) => ({
     line-height: 1.45;
     white-space: pre-wrap;
     word-break: break-word;
+  }
+  .recap-preview :global([data-key]),
+  .recap-path[data-key] {
+    cursor: pointer;
+  }
+  .recap-preview :global([data-key]:hover),
+  .recap-preview :global(.is-lit),
+  .recap-path.is-lit {
+    border-radius: 4px;
+    background: color-mix(in srgb, var(--accent) 18%, transparent);
+    outline: 1px dashed color-mix(in srgb, var(--accent) 60%, transparent);
   }
   .recap-actions,
   .recap :global(.recap-actions) {
