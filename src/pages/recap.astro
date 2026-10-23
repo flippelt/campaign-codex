@@ -102,90 +102,133 @@ const campaignOptions = campaigns.map((c) => ({
 
     <section id="panel-single" class="recap-panel" role="tabpanel" aria-labelledby="tab-single">
       <form id="singleForm" class="recap-split">
-        <div class="recap-form">
-          <label class="recap-field">
-            <span>Tipo</span>
-            <select id="entryType" class="recap-input" name="type">
-              {
-                TYPE_KEYS.map((key) => (
-                  <option value={key} selected={key === 'events' ? true : undefined}>
-                    {TYPES[key].emoji} {TYPES[key].label}
-                  </option>
-                ))
-              }
-            </select>
-          </label>
-          <label class="recap-field">
-            <span>Título</span>
-            <input id="entryTitle" class="recap-input" name="title" required autocomplete="off" />
-          </label>
-          <label class="recap-field">
-            <span>Slug</span>
-            <input
-              id="entrySlug"
-              class="recap-input"
-              name="slug"
-              placeholder="gerado do título"
-              autocomplete="off"
-              spellcheck="false"
-            />
-          </label>
-          <label class="recap-field recap-field--narrow">
-            <span>Emoji</span>
-            <input id="entryEmoji" class="recap-input" name="emoji" value="⚡" autocomplete="off" />
-          </label>
-          <label class="recap-field recap-field--full">
-            <span>Resumo</span>
-            <input id="entrySummary" class="recap-input" name="summary" autocomplete="off" />
-          </label>
-          <label class="recap-field recap-field--full">
-            <span>Tags <span class="recap-hint">(vírgulas)</span></span>
-            <input
-              id="entryTags"
-              class="recap-input"
-              name="tags"
-              placeholder="batalha, fenda"
-              autocomplete="off"
-            />
-          </label>
-          <label class="recap-field">
-            <span>Status</span>
-            <input id="entryStatus" class="recap-input" name="status" placeholder="vivo, ativo…" />
-          </label>
-          <label class="recap-field">
-            <span>Facção</span>
-            <input id="entryFaction" class="recap-input" name="faction" />
-          </label>
-          <label class="recap-field">
-            <span>Papel</span>
-            <input id="entryRole" class="recap-input" name="role" />
-          </label>
-          <label class="recap-field">
-            <span>Local</span>
-            <input id="entryLocation" class="recap-input" name="location" />
-          </label>
-          <label class="recap-field">
-            <span>Data <span class="recap-hint">(no mundo)</span></span>
-            <input
-              id="entryDate"
-              class="recap-input"
-              name="date"
-              placeholder="Inverno do 12º ano"
-            />
-          </label>
-          <label class="recap-field recap-field--narrow">
-            <span>Ordem</span>
-            <input id="entryOrder" class="recap-input" name="order" type="number" value="0" />
-          </label>
-          <label class="recap-check">
-            <input id="entryDraft" type="checkbox" name="draft" />
-            <span>Rascunho</span>
-          </label>
-          <label class="recap-field recap-field--full">
-            <span>Corpo</span>
-            <textarea id="entryBody" class="recap-input recap-input--body" name="body" rows="10"
-            ></textarea>
-          </label>
+        <div class="recap-blocks">
+          <details class="recap-block">
+            <summary>
+              <span class="recap-block__title">Identificação</span>
+              <small class="recap-block__sub">Tipo, título, slug, emoji, resumo e tags</small>
+            </summary>
+            <div class="recap-form">
+              <label class="recap-field">
+                <span>Tipo</span>
+                <select id="entryType" class="recap-input" name="type">
+                  {
+                    TYPE_KEYS.map((key) => (
+                      <option value={key} selected={key === 'events' ? true : undefined}>
+                        {TYPES[key].emoji} {TYPES[key].label}
+                      </option>
+                    ))
+                  }
+                </select>
+              </label>
+              <label class="recap-field">
+                <span>Título</span>
+                <input
+                  id="entryTitle"
+                  class="recap-input"
+                  name="title"
+                  required
+                  autocomplete="off"
+                />
+              </label>
+              <label class="recap-field">
+                <span>Slug</span>
+                <input
+                  id="entrySlug"
+                  class="recap-input"
+                  name="slug"
+                  placeholder="gerado do título"
+                  autocomplete="off"
+                  spellcheck="false"
+                />
+              </label>
+              <label class="recap-field recap-field--narrow">
+                <span>Emoji</span>
+                <input
+                  id="entryEmoji"
+                  class="recap-input"
+                  name="emoji"
+                  value="⚡"
+                  autocomplete="off"
+                />
+              </label>
+              <label class="recap-field recap-field--full">
+                <span>Resumo</span>
+                <input id="entrySummary" class="recap-input" name="summary" autocomplete="off" />
+              </label>
+              <label class="recap-field recap-field--full">
+                <span>Tags <span class="recap-hint">(vírgulas)</span></span>
+                <input
+                  id="entryTags"
+                  class="recap-input"
+                  name="tags"
+                  placeholder="batalha, fenda"
+                  autocomplete="off"
+                />
+              </label>
+            </div>
+          </details>
+          <details class="recap-block">
+            <summary>
+              <span class="recap-block__title">Metadados</span>
+              <small class="recap-block__sub"
+                >Status, facção, papel, local, data, ordem e rascunho</small
+              >
+            </summary>
+            <div class="recap-form">
+              <label class="recap-field">
+                <span>Status</span>
+                <input
+                  id="entryStatus"
+                  class="recap-input"
+                  name="status"
+                  placeholder="vivo, ativo…"
+                />
+              </label>
+              <label class="recap-field">
+                <span>Facção</span>
+                <input id="entryFaction" class="recap-input" name="faction" />
+              </label>
+              <label class="recap-field">
+                <span>Papel</span>
+                <input id="entryRole" class="recap-input" name="role" />
+              </label>
+              <label class="recap-field">
+                <span>Local</span>
+                <input id="entryLocation" class="recap-input" name="location" />
+              </label>
+              <label class="recap-field">
+                <span>Data <span class="recap-hint">(no mundo)</span></span>
+                <input
+                  id="entryDate"
+                  class="recap-input"
+                  name="date"
+                  placeholder="Inverno do 12º ano"
+                />
+              </label>
+              <label class="recap-field recap-field--narrow">
+                <span>Ordem</span>
+                <input id="entryOrder" class="recap-input" name="order" type="number" value="0" />
+              </label>
+              <label class="recap-check">
+                <input id="entryDraft" type="checkbox" name="draft" />
+                <span>Rascunho</span>
+              </label>
+            </div>
+          </details>
+          <details class="recap-block">
+            <summary>
+              <span class="recap-block__title">Texto</span>
+              <small class="recap-block__sub">O corpo da entrada, em Markdown</small>
+            </summary>
+            <div class="recap-form">
+              <label class="recap-field recap-field--full">
+                <span>Corpo</span>
+                <textarea id="entryBody" class="recap-input recap-input--body" name="body" rows="10"
+                ></textarea>
+              </label>
+            </div>
+          </details>
         </div>
         <div class="recap-side">
           <div class="recap-side__head">
@@ -565,6 +608,50 @@ const campaignOptions = campaigns.map((c) => ({
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
+  }
+  /* Blocos fechados com uma linha do que há dentro, como no editor do opord. */
+  .recap-blocks {
+    min-width: 0;
+  }
+  .recap-block {
+    border-top: 1px solid var(--border);
+  }
+  .recap-block:last-child {
+    border-bottom: 1px solid var(--border);
+  }
+  .recap-block > summary {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 12px 0 12px 20px;
+    cursor: pointer;
+    list-style: none;
+  }
+  .recap-block > summary::-webkit-details-marker {
+    display: none;
+  }
+  .recap-block > summary::before {
+    content: '▸';
+    position: absolute;
+    left: 2px;
+    top: 12px;
+    color: var(--muted);
+  }
+  .recap-block[open] > summary::before {
+    content: '▾';
+    color: var(--accent);
+  }
+  .recap-block__title {
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .recap-block__sub {
+    font-size: 0.8rem;
+    color: var(--muted);
+  }
+  .recap-block > .recap-form {
+    padding: 0 0 16px 20px;
   }
   .recap-form {
     display: grid;
